@@ -362,6 +362,37 @@ a {
   font-size: 14px;
   line-height: 1.5;
 }
+
+.auth-email-options {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.auth-email-options button {
+  border: 0;
+  background: transparent;
+  color: #006235;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 0;
+}
+.auth-email-options button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.auth-result-card .notice {
+  margin: 24px 0;
+}
+.auth-result-card .notice h1 {
+  margin: 0 0 8px;
+}
+.auth-result-action {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
 .signup-form {
   display: grid;
   gap: 14px;

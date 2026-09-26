@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { BrandMark } from "../components/yamdy-shell";
-import { signIn } from "../lib/auth";
+import { requestMagicLink, requestPasswordReset, signIn } from "../lib/auth";
 
 export const Route = createFileRoute("/signin")({ component: SignIn });
 
@@ -11,6 +11,26 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  async function sendEmail(kind: "reset" | "magic") {
+    setBusy(true);
+    setError("");
+    setNotice("");
+    try {
+      if (!email.trim()) throw new Error("Enter your work email first.");
+      if (kind === "reset") await requestPasswordReset(email);
+      else await requestMagicLink(email);
+      setNotice(
+        kind === "reset"
+          ? "If that account exists, a password reset email is on its way."
+          : "If that account exists, a sign-in link is on its way.",
+      );
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not send email.");
+    } finally {
+      setBusy(false);
+    }
+  }
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -75,9 +95,34 @@ function SignIn() {
               {error}
             </p>
           )}
+          {notice && (
+            <p className="notice success" role="status">
+              {notice}
+            </p>
+          )}
           <button disabled={busy} className="primary-button full-width">
             {busy ? "Signing in…" : "Sign in →"}
           </button>
+          <div className="auth-email-options">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                void sendEmail("reset");
+              }}
+            >
+              Forgot password?
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                void sendEmail("magic");
+              }}
+            >
+              Email me a sign-in link
+            </button>
+          </div>
         </form>
       </div>
     </main>

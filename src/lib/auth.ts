@@ -85,6 +85,7 @@ export async function createWorkspaceAccountWith(
     email: input.email.trim(),
     password: input.password,
     options: {
+      emailRedirectTo: `${typeof window === "undefined" ? "https://app.yamdy.net" : window.location.origin}/auth/callback?flow=confirmation`,
       data: {
         full_name: input.fullName.trim(),
         pending_workspace_name: input.businessName.trim(),
@@ -126,5 +127,51 @@ export async function signInWith(
 
 export async function signOut(): Promise<void> {
   const { error } = await configuredClient().auth.signOut();
+  if (error) throw error;
+}
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  return requestPasswordResetWith(configuredClient(), email, window.location.origin);
+}
+
+export async function requestPasswordResetWith(
+  client: SupabaseClient<Database>,
+  email: string,
+  origin: string,
+): Promise<void> {
+  const { error } = await client.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: `${origin}/auth/reset-password`,
+  });
+  if (error) throw error;
+}
+
+export async function requestMagicLink(email: string): Promise<void> {
+  return requestMagicLinkWith(configuredClient(), email, window.location.origin);
+}
+
+export async function requestMagicLinkWith(
+  client: SupabaseClient<Database>,
+  email: string,
+  origin: string,
+): Promise<void> {
+  const { error } = await client.auth.signInWithOtp({
+    email: email.trim(),
+    options: {
+      shouldCreateUser: false,
+      emailRedirectTo: `${origin}/auth/callback?flow=magic-link`,
+    },
+  });
+  if (error) throw error;
+}
+
+export async function updatePassword(password: string): Promise<void> {
+  return updatePasswordWith(configuredClient(), password);
+}
+
+export async function updatePasswordWith(
+  client: SupabaseClient<Database>,
+  password: string,
+): Promise<void> {
+  const { error } = await client.auth.updateUser({ password });
   if (error) throw error;
 }

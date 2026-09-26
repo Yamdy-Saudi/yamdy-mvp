@@ -23,6 +23,8 @@ import { Route as AppPerformanceRouteImport } from './routes/app/performance'
 import { Route as AppPricingRouteImport } from './routes/app/pricing'
 import { Route as AppPromotionsRouteImport } from './routes/app/promotions'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as OnboardingConnectRouteImport } from './routes/onboarding/connect'
 import { Route as OnboardingImportRouteImport } from './routes/onboarding/import'
 import { Route as AppListingsIndexRouteImport } from './routes/app/listings/index'
@@ -104,6 +106,16 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/auth/reset-password',
+  path: '/auth/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingConnectRoute = OnboardingConnectRouteImport.update({
   id: '/onboarding/connect',
   path: '/onboarding/connect',
@@ -169,6 +181,8 @@ export interface FileRoutesByFullPath {
   '/app/pricing': typeof AppPricingRoute
   '/app/promotions': typeof AppPromotionsRoute
   '/app/settings': typeof AppSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/onboarding/connect': typeof OnboardingConnectRoute
   '/onboarding/import': typeof OnboardingImportRoute
   '/app/': typeof AppIndexRoute
@@ -194,6 +208,8 @@ export interface FileRoutesByTo {
   '/app/pricing': typeof AppPricingRoute
   '/app/promotions': typeof AppPromotionsRoute
   '/app/settings': typeof AppSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/onboarding/connect': typeof OnboardingConnectRoute
   '/onboarding/import': typeof OnboardingImportRoute
   '/app': typeof AppIndexRoute
@@ -221,6 +237,8 @@ export interface FileRoutesById {
   '/app/pricing': typeof AppPricingRoute
   '/app/promotions': typeof AppPromotionsRoute
   '/app/settings': typeof AppSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/onboarding/connect': typeof OnboardingConnectRoute
   '/onboarding/import': typeof OnboardingImportRoute
   '/app/': typeof AppIndexRoute
@@ -249,6 +267,8 @@ export interface FileRouteTypes {
     | '/app/pricing'
     | '/app/promotions'
     | '/app/settings'
+    | '/auth/callback'
+    | '/auth/reset-password'
     | '/onboarding/connect'
     | '/onboarding/import'
     | '/app/'
@@ -274,6 +294,8 @@ export interface FileRouteTypes {
     | '/app/pricing'
     | '/app/promotions'
     | '/app/settings'
+    | '/auth/callback'
+    | '/auth/reset-password'
     | '/onboarding/connect'
     | '/onboarding/import'
     | '/app'
@@ -300,6 +322,8 @@ export interface FileRouteTypes {
     | '/app/pricing'
     | '/app/promotions'
     | '/app/settings'
+    | '/auth/callback'
+    | '/auth/reset-password'
     | '/onboarding/connect'
     | '/onboarding/import'
     | '/app/'
@@ -319,6 +343,8 @@ export interface RootRouteChildren {
   DemoPreviewRoute: typeof DemoPreviewRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   OnboardingConnectRoute: typeof OnboardingConnectRoute
   OnboardingImportRoute: typeof OnboardingImportRoute
 }
@@ -422,6 +448,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/auth/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/onboarding/connect': {
       id: '/onboarding/connect'
@@ -544,6 +584,8 @@ const rootRouteChildren: RootRouteChildren = {
   DemoPreviewRoute: DemoPreviewRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
   OnboardingConnectRoute: OnboardingConnectRoute,
   OnboardingImportRoute: OnboardingImportRoute,
 }
