@@ -27,34 +27,13 @@ a {
 .brand-mark {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: #006235;
-  white-space: nowrap;
+  line-height: 0;
 }
-.brand-mark__tile {
-  display: grid;
-  place-items: center;
-  width: 39px;
-  height: 39px;
-  border-radius: 9px;
-  background: #006235;
-  color: white;
-  font-size: 23px;
-  font-weight: 700;
-}
-.brand-mark__copy {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
-}
-.brand-mark__copy strong {
-  font-size: 17px;
-}
-.brand-mark__copy small {
-  margin-top: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  color: #3f4940;
+.brand-mark__image {
+  display: block;
+  width: 150px;
+  height: auto;
+  mix-blend-mode: multiply;
 }
 .eyebrow {
   font-size: 11px;

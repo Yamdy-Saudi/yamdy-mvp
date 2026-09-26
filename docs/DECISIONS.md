@@ -6,6 +6,7 @@
 - `20260926172727_demo_product_domain.sql` and `20260926180626_branch_scoped_demo_audit.sql` are applied through `supabase_yamdy`. The first adds the demo operating schema and role-checked RPCs; the second aligns audit visibility with branch access. Generated TypeScript database types come from all committed migrations.
 - Hosted workspace demo data is created only by the authenticated idempotent bootstrap after a mock import. The standalone development seed stays local. The development-only static preview is for visual QA without a login.
 - Approval creates a simulated execution with no external confirmation. No live channel publishing, campaign placement, bid spending, or financial action is inferred from a Stitch control. Partner eligibility, contracts, credentials, and confirmation semantics remain open.
+- Lovable's synced build did not receive ignored `.env.local`, leaving Supabase Auth unconfigured. The repository now carries only the hosted URL and Supabase publishable key in `.env`, as public `VITE_` build values. This is safe for the browser with the existing RLS; service-role and integration secrets remain excluded. The client reads these values with static `import.meta.env.VITE_*` access.
 
 ## Milestone 1 decisions (2026-09-26)
 

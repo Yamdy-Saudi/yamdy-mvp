@@ -21,11 +21,7 @@ import { signOut, type WorkspaceSummary } from "../lib/auth";
 export function BrandMark() {
   return (
     <span className="brand-mark">
-      <span className="brand-mark__tile">Y</span>
-      <span className="brand-mark__copy">
-        <strong>Yamdy</strong>
-        <small>يمدي · KSA Ops</small>
-      </span>
+      <img className="brand-mark__image" src="/yamdy-logo.png" alt="Yamdy يمدي" />
     </span>
   );
 }
