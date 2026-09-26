@@ -1,6 +1,6 @@
 # Approved Stitch screen map
 
-Source: Stitch project `projects/8813799588670496359`, inspected through its MCP screen list and exported HTML on 2026-09-26. Routes are proposed implementation routes, not routes already present. Each number is the Stitch screen title prefix. Inspect the screen in Stitch again before implementation. All 18 are desktop at 1280 px; no approved mobile screens were found.
+Source: Stitch project `projects/8813799588670496359`, inspected through its MCP screen list and actual exported HTML for all 18 screens on 2026-09-26. All routes render: screens 1–3 handle onboarding; screens 4–18 use clearly labeled, persisted demo data where a real channel or market feed is unavailable. The development-only `/demo-preview` route provides a static fixture for visual review without signing in. Each number is the Stitch screen title prefix. The approved designs are desktop; no approved mobile screens were found. Screen 3 imports labeled sample brand/branch mappings only; live synchronization and catalog import require partner access.
 
 ## Shared visual and interaction system
 

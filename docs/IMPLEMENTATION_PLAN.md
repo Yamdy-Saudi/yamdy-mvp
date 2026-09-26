@@ -1,6 +1,14 @@
 # Proposed implementation milestones
 
-No product feature implementation is authorized by this documentation task. Start only after owner approval and resolve the gate in milestone 0. Each milestone should ship a small working vertical slice, with migrations, RLS and evidence of behavior where data is exposed.
+## Milestone 1 status (2026-09-26)
+
+Foundation implementation includes all planned route registrations, the shared shell, Supabase Auth and tenant model, migrations and RLS, generated database types, local demo seeds, and the three Stitch onboarding screens. Connection and import in this milestone save mock/demo records only; catalog and production integration remain outside scope. The committed migrations are applied to hosted Supabase project `ocwgdprgoelmqbspkdms`; migration and RLS tests also run in isolated PGlite. Docker is not required. Test the browser Auth/API flow against the hosted project.
+
+Milestone 1 was authorized and implemented. Each further milestone should ship a small working vertical slice, with migrations, RLS and evidence of behavior where data is exposed. The partner access gate remains before any live HungerStation operation.
+
+## Demo product pass (2026-09-26)
+
+With the owner authorizing completion of the remaining product using demo data, screens 4–18 now have working read, filter, draft, recommendation, approval, and activity surfaces. The domain migration seeds sample catalog, opportunity, draft, and performance data through an authenticated idempotent RPC after mock import. Draft edits, opportunity decisions, and simulated approvals persist and create audit events. A follow-up migration scopes branch-specific audit reads. All four migrations were applied through `supabase_yamdy`; isolated PGlite tests continue to run without Docker. No HungerStation production endpoint, advertising action, or financial transaction is called. Live capabilities and externally confirmed publication remain behind the partner access gate.
 
 | Milestone | Scope | Acceptance criteria |
 |---|---|---|

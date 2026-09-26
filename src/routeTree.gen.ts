@@ -10,33 +10,317 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as DemoPreviewRouteImport } from './routes/demo-preview'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppActivityRouteImport } from './routes/app/activity'
+import { Route as AppApprovalsRouteImport } from './routes/app/approvals'
+import { Route as AppBundlesRouteImport } from './routes/app/bundles'
+import { Route as AppHealthRouteImport } from './routes/app/health'
+import { Route as AppPerformanceRouteImport } from './routes/app/performance'
+import { Route as AppPricingRouteImport } from './routes/app/pricing'
+import { Route as AppPromotionsRouteImport } from './routes/app/promotions'
+import { Route as AppSettingsRouteImport } from './routes/app/settings'
+import { Route as OnboardingConnectRouteImport } from './routes/onboarding/connect'
+import { Route as OnboardingImportRouteImport } from './routes/onboarding/import'
+import { Route as AppListingsIndexRouteImport } from './routes/app/listings/index'
+import { Route as AppMarketingIndexRouteImport } from './routes/app/marketing/index'
+import { Route as AppMarketingBidsRouteImport } from './routes/app/marketing/bids'
+import { Route as AppMarketingNewRouteImport } from './routes/app/marketing/new'
+import { Route as AppOpportunitiesIndexRouteImport } from './routes/app/opportunities/index'
+import { Route as AppOpportunitiesIdRouteImport } from './routes/app/opportunities/$id'
+import { Route as AppListingsIdIndexRouteImport } from './routes/app/listings/$id/index'
+import { Route as AppListingsIdOptimizeRouteImport } from './routes/app/listings/$id/optimize'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoPreviewRoute = DemoPreviewRouteImport.update({
+  id: '/demo-preview',
+  path: '/demo-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppActivityRoute = AppActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppApprovalsRoute = AppApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBundlesRoute = AppBundlesRouteImport.update({
+  id: '/bundles',
+  path: '/bundles',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppHealthRoute = AppHealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPerformanceRoute = AppPerformanceRouteImport.update({
+  id: '/performance',
+  path: '/performance',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPricingRoute = AppPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPromotionsRoute = AppPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const OnboardingConnectRoute = OnboardingConnectRouteImport.update({
+  id: '/onboarding/connect',
+  path: '/onboarding/connect',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingImportRoute = OnboardingImportRouteImport.update({
+  id: '/onboarding/import',
+  path: '/onboarding/import',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppListingsIndexRoute = AppListingsIndexRouteImport.update({
+  id: '/listings/',
+  path: '/listings/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMarketingIndexRoute = AppMarketingIndexRouteImport.update({
+  id: '/marketing/',
+  path: '/marketing/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMarketingBidsRoute = AppMarketingBidsRouteImport.update({
+  id: '/marketing/bids',
+  path: '/marketing/bids',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMarketingNewRoute = AppMarketingNewRouteImport.update({
+  id: '/marketing/new',
+  path: '/marketing/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOpportunitiesIndexRoute = AppOpportunitiesIndexRouteImport.update({
+  id: '/opportunities/',
+  path: '/opportunities/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOpportunitiesIdRoute = AppOpportunitiesIdRouteImport.update({
+  id: '/opportunities/$id',
+  path: '/opportunities/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppListingsIdIndexRoute = AppListingsIdIndexRouteImport.update({
+  id: '/listings/$id/',
+  path: '/listings/$id/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppListingsIdOptimizeRoute = AppListingsIdOptimizeRouteImport.update({
+  id: '/listings/$id/optimize',
+  path: '/listings/$id/optimize',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/demo-preview': typeof DemoPreviewRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
+  '/app/activity': typeof AppActivityRoute
+  '/app/approvals': typeof AppApprovalsRoute
+  '/app/bundles': typeof AppBundlesRoute
+  '/app/health': typeof AppHealthRoute
+  '/app/performance': typeof AppPerformanceRoute
+  '/app/pricing': typeof AppPricingRoute
+  '/app/promotions': typeof AppPromotionsRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/onboarding/connect': typeof OnboardingConnectRoute
+  '/onboarding/import': typeof OnboardingImportRoute
+  '/app/': typeof AppIndexRoute
+  '/app/marketing/bids': typeof AppMarketingBidsRoute
+  '/app/marketing/new': typeof AppMarketingNewRoute
+  '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/listings/': typeof AppListingsIndexRoute
+  '/app/marketing/': typeof AppMarketingIndexRoute
+  '/app/opportunities/': typeof AppOpportunitiesIndexRoute
+  '/app/listings/$id/optimize': typeof AppListingsIdOptimizeRoute
+  '/app/listings/$id/': typeof AppListingsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/demo-preview': typeof DemoPreviewRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
+  '/app/activity': typeof AppActivityRoute
+  '/app/approvals': typeof AppApprovalsRoute
+  '/app/bundles': typeof AppBundlesRoute
+  '/app/health': typeof AppHealthRoute
+  '/app/performance': typeof AppPerformanceRoute
+  '/app/pricing': typeof AppPricingRoute
+  '/app/promotions': typeof AppPromotionsRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/onboarding/connect': typeof OnboardingConnectRoute
+  '/onboarding/import': typeof OnboardingImportRoute
+  '/app': typeof AppIndexRoute
+  '/app/marketing/bids': typeof AppMarketingBidsRoute
+  '/app/marketing/new': typeof AppMarketingNewRoute
+  '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/listings': typeof AppListingsIndexRoute
+  '/app/marketing': typeof AppMarketingIndexRoute
+  '/app/opportunities': typeof AppOpportunitiesIndexRoute
+  '/app/listings/$id/optimize': typeof AppListingsIdOptimizeRoute
+  '/app/listings/$id': typeof AppListingsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/demo-preview': typeof DemoPreviewRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
+  '/app/activity': typeof AppActivityRoute
+  '/app/approvals': typeof AppApprovalsRoute
+  '/app/bundles': typeof AppBundlesRoute
+  '/app/health': typeof AppHealthRoute
+  '/app/performance': typeof AppPerformanceRoute
+  '/app/pricing': typeof AppPricingRoute
+  '/app/promotions': typeof AppPromotionsRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/onboarding/connect': typeof OnboardingConnectRoute
+  '/onboarding/import': typeof OnboardingImportRoute
+  '/app/': typeof AppIndexRoute
+  '/app/marketing/bids': typeof AppMarketingBidsRoute
+  '/app/marketing/new': typeof AppMarketingNewRoute
+  '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/listings/': typeof AppListingsIndexRoute
+  '/app/marketing/': typeof AppMarketingIndexRoute
+  '/app/opportunities/': typeof AppOpportunitiesIndexRoute
+  '/app/listings/$id/optimize': typeof AppListingsIdOptimizeRoute
+  '/app/listings/$id/': typeof AppListingsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/demo-preview'
+    | '/signin'
+    | '/signup'
+    | '/app/activity'
+    | '/app/approvals'
+    | '/app/bundles'
+    | '/app/health'
+    | '/app/performance'
+    | '/app/pricing'
+    | '/app/promotions'
+    | '/app/settings'
+    | '/onboarding/connect'
+    | '/onboarding/import'
+    | '/app/'
+    | '/app/marketing/bids'
+    | '/app/marketing/new'
+    | '/app/opportunities/$id'
+    | '/app/listings/'
+    | '/app/marketing/'
+    | '/app/opportunities/'
+    | '/app/listings/$id/optimize'
+    | '/app/listings/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/demo-preview'
+    | '/signin'
+    | '/signup'
+    | '/app/activity'
+    | '/app/approvals'
+    | '/app/bundles'
+    | '/app/health'
+    | '/app/performance'
+    | '/app/pricing'
+    | '/app/promotions'
+    | '/app/settings'
+    | '/onboarding/connect'
+    | '/onboarding/import'
+    | '/app'
+    | '/app/marketing/bids'
+    | '/app/marketing/new'
+    | '/app/opportunities/$id'
+    | '/app/listings'
+    | '/app/marketing'
+    | '/app/opportunities'
+    | '/app/listings/$id/optimize'
+    | '/app/listings/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/demo-preview'
+    | '/signin'
+    | '/signup'
+    | '/app/activity'
+    | '/app/approvals'
+    | '/app/bundles'
+    | '/app/health'
+    | '/app/performance'
+    | '/app/pricing'
+    | '/app/promotions'
+    | '/app/settings'
+    | '/onboarding/connect'
+    | '/onboarding/import'
+    | '/app/'
+    | '/app/marketing/bids'
+    | '/app/marketing/new'
+    | '/app/opportunities/$id'
+    | '/app/listings/'
+    | '/app/marketing/'
+    | '/app/opportunities/'
+    | '/app/listings/$id/optimize'
+    | '/app/listings/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  DemoPreviewRoute: typeof DemoPreviewRoute
+  SigninRoute: typeof SigninRoute
+  SignupRoute: typeof SignupRoute
+  OnboardingConnectRoute: typeof OnboardingConnectRoute
+  OnboardingImportRoute: typeof OnboardingImportRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +332,220 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo-preview': {
+      id: '/demo-preview'
+      path: '/demo-preview'
+      fullPath: '/demo-preview'
+      preLoaderRoute: typeof DemoPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/activity': {
+      id: '/app/activity'
+      path: '/activity'
+      fullPath: '/app/activity'
+      preLoaderRoute: typeof AppActivityRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/approvals': {
+      id: '/app/approvals'
+      path: '/approvals'
+      fullPath: '/app/approvals'
+      preLoaderRoute: typeof AppApprovalsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/bundles': {
+      id: '/app/bundles'
+      path: '/bundles'
+      fullPath: '/app/bundles'
+      preLoaderRoute: typeof AppBundlesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/health': {
+      id: '/app/health'
+      path: '/health'
+      fullPath: '/app/health'
+      preLoaderRoute: typeof AppHealthRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/performance': {
+      id: '/app/performance'
+      path: '/performance'
+      fullPath: '/app/performance'
+      preLoaderRoute: typeof AppPerformanceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/pricing': {
+      id: '/app/pricing'
+      path: '/pricing'
+      fullPath: '/app/pricing'
+      preLoaderRoute: typeof AppPricingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/promotions': {
+      id: '/app/promotions'
+      path: '/promotions'
+      fullPath: '/app/promotions'
+      preLoaderRoute: typeof AppPromotionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/onboarding/connect': {
+      id: '/onboarding/connect'
+      path: '/onboarding/connect'
+      fullPath: '/onboarding/connect'
+      preLoaderRoute: typeof OnboardingConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/import': {
+      id: '/onboarding/import'
+      path: '/onboarding/import'
+      fullPath: '/onboarding/import'
+      preLoaderRoute: typeof OnboardingImportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/listings/': {
+      id: '/app/listings/'
+      path: '/listings'
+      fullPath: '/app/listings/'
+      preLoaderRoute: typeof AppListingsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/marketing/': {
+      id: '/app/marketing/'
+      path: '/marketing'
+      fullPath: '/app/marketing/'
+      preLoaderRoute: typeof AppMarketingIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/marketing/bids': {
+      id: '/app/marketing/bids'
+      path: '/marketing/bids'
+      fullPath: '/app/marketing/bids'
+      preLoaderRoute: typeof AppMarketingBidsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/marketing/new': {
+      id: '/app/marketing/new'
+      path: '/marketing/new'
+      fullPath: '/app/marketing/new'
+      preLoaderRoute: typeof AppMarketingNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/opportunities/': {
+      id: '/app/opportunities/'
+      path: '/opportunities'
+      fullPath: '/app/opportunities/'
+      preLoaderRoute: typeof AppOpportunitiesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/opportunities/$id': {
+      id: '/app/opportunities/$id'
+      path: '/opportunities/$id'
+      fullPath: '/app/opportunities/$id'
+      preLoaderRoute: typeof AppOpportunitiesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/listings/$id/': {
+      id: '/app/listings/$id/'
+      path: '/listings/$id'
+      fullPath: '/app/listings/$id/'
+      preLoaderRoute: typeof AppListingsIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/listings/$id/optimize': {
+      id: '/app/listings/$id/optimize'
+      path: '/listings/$id/optimize'
+      fullPath: '/app/listings/$id/optimize'
+      preLoaderRoute: typeof AppListingsIdOptimizeRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppActivityRoute: typeof AppActivityRoute
+  AppApprovalsRoute: typeof AppApprovalsRoute
+  AppBundlesRoute: typeof AppBundlesRoute
+  AppHealthRoute: typeof AppHealthRoute
+  AppPerformanceRoute: typeof AppPerformanceRoute
+  AppPricingRoute: typeof AppPricingRoute
+  AppPromotionsRoute: typeof AppPromotionsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppMarketingBidsRoute: typeof AppMarketingBidsRoute
+  AppMarketingNewRoute: typeof AppMarketingNewRoute
+  AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
+  AppListingsIndexRoute: typeof AppListingsIndexRoute
+  AppMarketingIndexRoute: typeof AppMarketingIndexRoute
+  AppOpportunitiesIndexRoute: typeof AppOpportunitiesIndexRoute
+  AppListingsIdOptimizeRoute: typeof AppListingsIdOptimizeRoute
+  AppListingsIdIndexRoute: typeof AppListingsIdIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppActivityRoute: AppActivityRoute,
+  AppApprovalsRoute: AppApprovalsRoute,
+  AppBundlesRoute: AppBundlesRoute,
+  AppHealthRoute: AppHealthRoute,
+  AppPerformanceRoute: AppPerformanceRoute,
+  AppPricingRoute: AppPricingRoute,
+  AppPromotionsRoute: AppPromotionsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppMarketingBidsRoute: AppMarketingBidsRoute,
+  AppMarketingNewRoute: AppMarketingNewRoute,
+  AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,
+  AppListingsIndexRoute: AppListingsIndexRoute,
+  AppMarketingIndexRoute: AppMarketingIndexRoute,
+  AppOpportunitiesIndexRoute: AppOpportunitiesIndexRoute,
+  AppListingsIdOptimizeRoute: AppListingsIdOptimizeRoute,
+  AppListingsIdIndexRoute: AppListingsIdIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  DemoPreviewRoute: DemoPreviewRoute,
+  SigninRoute: SigninRoute,
+  SignupRoute: SignupRoute,
+  OnboardingConnectRoute: OnboardingConnectRoute,
+  OnboardingImportRoute: OnboardingImportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

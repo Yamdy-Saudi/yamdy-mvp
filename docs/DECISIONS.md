@@ -1,5 +1,20 @@
 # Architecture decisions and open questions
 
+## Demo product decisions (2026-09-26)
+
+- The owner authorized the remaining product screens as demo workflows until HungerStation access is available. Screens 4–18 use the inspected Stitch exports, explicitly labeled sample values, internal drafts, and simulated outcomes. Marketing spend, opportunity impact, and performance values are synthetic; they do not claim attribution.
+- `20260926172727_demo_product_domain.sql` and `20260926180626_branch_scoped_demo_audit.sql` are applied through `supabase_yamdy`. The first adds the demo operating schema and role-checked RPCs; the second aligns audit visibility with branch access. Generated TypeScript database types come from all committed migrations.
+- Hosted workspace demo data is created only by the authenticated idempotent bootstrap after a mock import. The standalone development seed stays local. The development-only static preview is for visual QA without a login.
+- Approval creates a simulated execution with no external confirmation. No live channel publishing, campaign placement, bid spending, or financial action is inferred from a Stitch control. Partner eligibility, contracts, credentials, and confirmation semantics remain open.
+
+## Milestone 1 decisions (2026-09-26)
+
+- The owner authorized the foundation plus the first three Stitch onboarding screens in Milestone 1. The connection and import screens therefore use a deterministic mock adapter and create only demo brand, branch, and mapping records. Catalog sync and live partner integration remain Milestone 2 work.
+- The frontend uses Supabase Auth with a publishable browser key and RLS. Authenticated database functions create a workspace and its owner membership atomically and set up an owner-controlled mock connection. A private credential-reference table is reserved for a future server-side integration.
+- The hosted Supabase project `ocwgdprgoelmqbspkdms` is the development target. The owner requested no Docker dependency; apply committed migrations through `supabase_yamdy` MCP and test the live Auth/API flow against that project. Isolated migration, seed, and RLS tests continue to run in PGlite. The local seed is not applied remotely.
+- Remote migration history assigned versions `20260926170434` and `20260926170553`; local filenames match. The second migration enables RLS on the private credential-reference table as defense in depth.
+- npm scripts and `package-lock.json` were added for reproducible checks in this environment. The existing Bun lockfile and TanStack stack were preserved.
+
 ## Recorded decisions (2026-09-26)
 
 1. **Preserve existing stack.** React/TanStack Start, TypeScript, Vite, Tailwind, Radix/shadcn and Bun lockfile already exist. Do not rewrite to another framework.
@@ -9,7 +24,7 @@
 5. **Approval, execution and confirmation are distinct.** A 202, completed job or human approval cannot alone assert customer-visible publication.
 6. **Migration files for every database change.** Schema, RLS, functions, reference data and backfills must be committed as migration files and applied through the migration workflow. Direct SQL writes through MCP, SQL Editor or other clients are prohibited; read-only inspection is allowed. Read-only `supabase-yamdy` MCP inspection found no app tables, migrations or dev branches.
 7. **No AI vendor or scraping choice yet.** Recommendations and market observations use provider boundaries and transparent demo data until sources are approved.
-8. **No feature implementation in this phase.** These documents specify a sequence for later approval.
+8. **Milestone 1 authorized and implemented.** Subsequent product milestones require their own scope and capability checks.
 
 ## Questions requiring owner or partner answer
 

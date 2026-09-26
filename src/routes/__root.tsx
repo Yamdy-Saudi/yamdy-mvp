@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import yamdyCss from "../yamdy.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -77,10 +78,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "App" },
-      { name: "description", content: "A fresh project boilerplate." },
-      { property: "og:title", content: "App" },
-      { property: "og:description", content: "A fresh project boilerplate." },
+      { title: "Yamdy — Restaurant Operations" },
+      {
+        name: "description",
+        content: "Yamdy helps restaurant teams review and execute delivery-channel opportunities.",
+      },
+      { property: "og:title", content: "Yamdy" },
+      {
+        property: "og:description",
+        content: "Restaurant delivery operations with human approval.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -88,6 +95,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "stylesheet",
+        href: yamdyCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],

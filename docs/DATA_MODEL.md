@@ -1,6 +1,16 @@
 # Proposed relational model
 
-This is a migration plan, not an applied schema. Connected Supabase has no `public` application tables or migrations as of 2026-09-26. Keep cross-tenant foreign keys anchored to `workspace_id`; constrain external IDs by provider/account and preserve import provenance. Use UTC timestamps, explicit currency (SAR initially), decimal money, stable enum/check domains and archived timestamps rather than destructive history loss.
+## Demo operating schema implemented (2026-09-26)
+
+`20260926172727_demo_product_domain.sql` adds workspace-bound demo products, branch product state, opportunities, approval requests, simulated executions, audit events, internal drafts, and synthetic daily performance. `20260926180626_branch_scoped_demo_audit.sql` adds branch scope to audit events associated with an opportunity or approval. Both are applied to the hosted development project. All exposed tables have RLS. The new entities are explicitly demo-only and do not replace the future observed channel, job, webhook, and experiment entities described below.
+
+## Milestone 1 schema implemented (2026-09-26)
+
+`supabase/migrations/20260926170434_platform_foundation.sql` creates `profiles`, `workspaces`, `workspace_memberships`, `brands`, `branches`, `membership_branch_access`, `aggregator_connections`, and `aggregator_branch_links`. The exposed tables all have RLS enabled. `20260926170553_private_credentials_rls.sql` enables defense-in-depth RLS on the unexposed private credential-reference table. Both migrations are applied to hosted project `ocwgdprgoelmqbspkdms`. Composite foreign keys bind branch and connection mappings to their workspace. Membership roles are owner, general manager, ecommerce manager, operator, and viewer. Branch scope is represented by `scope_all_branches` plus `membership_branch_access`.
+
+`private.aggregator_credentials` stores a future server-side secret reference and has no browser role grants. Connection mode is `mock` or `sandbox`; no production mode or live credential flow exists in this milestone. Demo records carry `is_demo`. The local-only seed migration is `supabase/development-migrations/20260926164636_development_seed.sql`. Future catalog and commercial entities below remain proposals.
+
+The foundation and demo entities above are applied to the hosted project; the richer observed-channel, external-job, and experiment entities below remain a migration plan. Keep cross-tenant foreign keys anchored to `workspace_id`; constrain external IDs by provider/account and preserve import provenance. Use UTC timestamps, explicit currency (SAR initially), decimal money, stable enum/check domains and archived timestamps rather than destructive history loss.
 
 ## Identity and organization
 
