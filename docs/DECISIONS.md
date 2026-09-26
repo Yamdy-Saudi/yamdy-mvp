@@ -7,7 +7,7 @@
 3. **Canonical model plus adapter.** HungerStation-specific IDs and payloads stay outside canonical domain entities. Capability checks gate every external action.
 4. **No inferred external API.** Public HungerStation docs describe Q-Commerce/Local Shops; restaurant eligibility and account entitlements need direct confirmation. Product content creation is beta/not production, same-item bundle is work in progress, and advertising/bid APIs were not found.
 5. **Approval, execution and confirmation are distinct.** A 202, completed job or human approval cannot alone assert customer-visible publication.
-6. **Supabase migrations and RLS from the start.** Read-only `supabase-yamdy` MCP inspection found no app tables, migrations or dev branches; no schema change was made.
+6. **Migration files for every database change.** Schema, RLS, functions, reference data and backfills must be committed as migration files and applied through the migration workflow. Direct SQL writes through MCP, SQL Editor or other clients are prohibited; read-only inspection is allowed. Read-only `supabase-yamdy` MCP inspection found no app tables, migrations or dev branches.
 7. **No AI vendor or scraping choice yet.** Recommendations and market observations use provider boundaries and transparent demo data until sources are approved.
 8. **No feature implementation in this phase.** These documents specify a sequence for later approval.
 
