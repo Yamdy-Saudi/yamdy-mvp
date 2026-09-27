@@ -85,7 +85,7 @@ export async function createWorkspaceAccountWith(
     email: input.email.trim(),
     password: input.password,
     options: {
-      emailRedirectTo: `${typeof window === "undefined" ? "https://app.yamdy.net" : window.location.origin}/auth/callback?flow=confirmation`,
+      emailRedirectTo: `${typeof window === "undefined" ? "https://yamdy.lovable.app" : window.location.origin}/auth/callback?flow=confirmation`,
       data: {
         full_name: input.fullName.trim(),
         pending_workspace_name: input.businessName.trim(),

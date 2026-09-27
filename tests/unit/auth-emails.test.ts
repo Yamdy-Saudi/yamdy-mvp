@@ -43,18 +43,18 @@ test("reset and passwordless requests use app routes and cannot create a new use
       },
     },
   } as unknown as SupabaseClient<Database>;
-  await requestPasswordResetWith(client, "  user@example.com ", "https://app.yamdy.net");
-  await requestMagicLinkWith(client, "  user@example.com ", "https://app.yamdy.net");
+  await requestPasswordResetWith(client, "  user@example.com ", "https://yamdy.lovable.app");
+  await requestMagicLinkWith(client, "  user@example.com ", "https://yamdy.lovable.app");
   await updatePasswordWith(client, "new-password-123");
   assert.deepEqual(calls, [
-    ["reset", "user@example.com", { redirectTo: "https://app.yamdy.net/auth/reset-password" }],
+    ["reset", "user@example.com", { redirectTo: "https://yamdy.lovable.app/auth/reset-password" }],
     [
       "magic",
       {
         email: "user@example.com",
         options: {
           shouldCreateUser: false,
-          emailRedirectTo: "https://app.yamdy.net/auth/callback?flow=magic-link",
+          emailRedirectTo: "https://yamdy.lovable.app/auth/callback?flow=magic-link",
         },
       },
     ],

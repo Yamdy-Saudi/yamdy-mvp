@@ -95,10 +95,10 @@ if (mode === "generate") {
       "utf8",
     );
     html = html
-      .replaceAll("{{ .SiteURL }}", "https://app.yamdy.net")
+      .replaceAll("{{ .SiteURL }}", "https://yamdy.lovable.app")
       .replaceAll(
         "{{ .ConfirmationURL }}",
-        "https://app.yamdy.net/auth/callback?flow=confirmation&amp;preview=1",
+        "https://yamdy.lovable.app/auth/callback?flow=confirmation&amp;preview=1",
       )
       .replaceAll("{{ .Token }}", "123456");
     await writeFile(join(fileURLToPath(destination), `${name}.html`), html);

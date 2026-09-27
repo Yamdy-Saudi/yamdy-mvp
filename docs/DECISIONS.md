@@ -20,6 +20,8 @@
 
 **Auth email content.** Yamdy auth email templates are fully branded and version-controlled, while custom SMTP/domain sending is deferred. The hosted Auth template fields and URL settings require Dashboard application because the connected MCP exposes no Auth configuration operation. The local Docker stack remains outside this project's development workflow; use a dummy HTML preview and hosted test mailbox instead. See `docs/AUTH_EMAILS.md`.
 
+**Hosted Auth update (2026-09-27).** The current live app is `https://yamdy.lovable.app`, and the hosted Auth Site URL plus exact production/local redirect allowlist now match it. Supabase Free disables custom template editing with its default email service; the committed Yamdy templates cannot be activated without a separately authorized Pro upgrade or a future delivery change. SMTP and Send Email hooks remain deferred. The live logo asset is reachable at `/yamdy-logo.png`.
+
 1. **Preserve existing stack.** React/TanStack Start, TypeScript, Vite, Tailwind, Radix/shadcn and Bun lockfile already exist. Do not rewrite to another framework.
 2. **Stitch is the visual source.** One Yamdy project `projects/8813799588670496359` contains all 18 numbered desktop screens; extra image assets are not additional product screens. Screen routes are proposed.
 3. **Canonical model plus adapter.** HungerStation-specific IDs and payloads stay outside canonical domain entities. Capability checks gate every external action.

@@ -16,9 +16,9 @@ export function emailFlow(value: string | null): EmailFlow {
 export function safeAuthDestination(value: string | null): string | null {
   if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\"))
     return null;
-  const url = new URL(value, "https://app.yamdy.net");
+  const url = new URL(value, "https://yamdy.lovable.app");
   if (
-    url.origin !== "https://app.yamdy.net" ||
+    url.origin !== "https://yamdy.lovable.app" ||
     (url.pathname !== "/app" && !url.pathname.startsWith("/app/"))
   )
     return null;

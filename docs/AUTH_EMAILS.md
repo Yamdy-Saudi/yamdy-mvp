@@ -15,11 +15,13 @@ Supabase uses the **same `magic_link` template for magic links and email OTP**. 
 
 ## Hosted project setup
 
-`supabase/config.toml` records subjects and template paths but **does not deploy Auth email settings to the hosted project**. `supabase_yamdy` MCP currently has no Auth template or URL configuration operation. An administrator must set the six subjects and paste each committed HTML template at Supabase Dashboard → Authentication → Email Templates for project `ocwgdprgoelmqbspkdms`. Set Authentication → URL Configuration Site URL to `https://app.yamdy.net`. Allow the callback and reset routes on that domain, plus the exact local development redirect URLs in `supabase/config.toml` if local click-through is required. Keep email confirmation enabled. Do not change SMTP or sender settings.
+`supabase/config.toml` records subjects and template paths but **does not deploy Auth email settings to the hosted project**. `supabase_yamdy` MCP has no Auth template configuration operation. On 2026-09-27, the hosted project was on Supabase Free. Its Dashboard disabled template subject and body editing with the default email service and offered three options: upgrade to Pro while retaining Supabase email delivery, configure custom SMTP, or configure a Send Email hook. SMTP and delivery hooks remain outside the authorized scope. The six committed templates are therefore **not active** on the hosted project unless Pro is separately authorized and enabled.
 
-The logo source is `public/yamdy-logo.png`. It must be publicly served at `https://app.yamdy.net/yamdy-logo.png` before activating these templates. `{{ .SiteURL }}/yamdy-logo.png` follows the configured Site URL; if an email client blocks the image, `alt="Yamdy"` remains. Verify the production URL returns an image before pasting templates into the hosted Dashboard.
+The hosted Auth Site URL is `https://yamdy.lovable.app`. Nine exact callback/reset URLs for the live app and local port 8080 are saved in the Dashboard and mirrored in `supabase/config.toml`. Email confirmation remains enabled. When template editing becomes available, paste the six committed HTML files and subjects in Authentication → Emails → Templates. Do not change SMTP or sender settings.
 
-As checked on 2026-09-26, `app.yamdy.net` did not resolve from this environment. Deploy the app and configure that DNS name before hosted email activation. The HTML also includes visible Yamdy text when images are unavailable.
+The logo source is `public/yamdy-logo.png`. It is publicly served at `https://yamdy.lovable.app/yamdy-logo.png` (HTTP 200, `image/png`, verified 2026-09-27). `{{ .SiteURL }}/yamdy-logo.png` follows the configured Site URL; if an email client blocks the image, the email retains alt text and visible Yamdy text.
+
+`app.yamdy.net` is a future custom domain and is not used by the current hosted Auth configuration.
 
 ## Application flow
 
