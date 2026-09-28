@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { useDemo } from "../demo-provider";
 import {
+  AcloConceptBanner,
   ActionFeedback,
   BarChart,
   DemoReady,
@@ -28,7 +29,7 @@ import { saveDemoDraft } from "../../lib/demo";
 export function PromotionsScreen() {
   const { workspace } = useDemo();
   const [title, setTitle] = useState("");
-  const [objective, setObjective] = useState("Boost weak hours");
+  const [objective, setObjective] = useState("Explore breakfast add-ons");
   const [discount, setDiscount] = useState("15");
   const [branchId, setBranchId] = useState("all");
   const action = useDemoAction();
@@ -46,6 +47,14 @@ export function PromotionsScreen() {
             subtitle="Explore sample demand opportunities and prepare internal promotion drafts."
             actions={<span className="demo-label">CHANNEL PUBLISH UNAVAILABLE</span>}
           >
+            {workspace.name.startsWith("Aclo") && (
+              <AcloConceptBanner
+                label="PROMOTION CONCEPT · DRAFT ONLY"
+                imagePath="/aclo-demo/promotion.png"
+                headline="Make the morning a little brighter."
+                description="An illustrative box and peach tea pairing for an internal offer draft."
+              />
+            )}
             <div className="demo-grid demo-grid--three">
               <Stat label="Sample promotions" value={drafts.length} />
               <Stat label="Demo opportunities" value={opps.length} tone="purple" />
@@ -72,7 +81,12 @@ export function PromotionsScreen() {
                         <h3>{opp.title}</h3>
                         <p>{opp.description}</p>
                         <div className="demo-opportunity-footer">
-                          <small>Estimated {formatSar(opp.estimated_impact_sar)} · Synthetic</small>
+                          <small>
+                            Impact{" "}
+                            {opp.estimated_impact_sar == null
+                              ? "not measured"
+                              : `${formatSar(opp.estimated_impact_sar)} · synthetic`}
+                          </small>
                           <Link
                             className="text-link"
                             to="/app/opportunities/$id"
@@ -103,7 +117,7 @@ export function PromotionsScreen() {
                       className="demo-input"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder="e.g. Tuesday Afternoon Boost"
+                      placeholder="e.g. Morning Box + Peach Tea"
                     />
                   </label>
                   <label className="demo-field">
@@ -113,7 +127,7 @@ export function PromotionsScreen() {
                       value={objective}
                       onChange={(e) => setObjective(e.target.value)}
                     >
-                      <option>Boost weak hours</option>
+                      <option>Explore breakfast add-ons</option>
                       <option>Increase basket value</option>
                       <option>Acquire new customers</option>
                       <option>Defend conversion</option>
@@ -243,7 +257,7 @@ export function BundlesScreen() {
   const { workspace } = useDemo();
   const [title, setTitle] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
-  const [price, setPrice] = useState("69");
+  const [price, setPrice] = useState("129");
   const action = useDemoAction();
   return (
     <DemoReady>
@@ -277,7 +291,7 @@ export function BundlesScreen() {
                       className="demo-input"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder="e.g. Family Lunch Combo"
+                      placeholder="e.g. Office Breakfast Sharing Set"
                     />
                   </label>
                   <p className="demo-help">
@@ -303,9 +317,18 @@ export function BundlesScreen() {
                             )
                           }
                         />
-                        <span className="demo-icon-box">
-                          <Package size={18} />
-                        </span>
+                        {product.image_path ? (
+                          <img
+                            className="demo-mini-product-image"
+                            src={product.image_path}
+                            alt=""
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span className="demo-icon-box">
+                            <Package size={18} />
+                          </span>
+                        )}
                         <div>
                           <strong>{product.name_en}</strong>
                           <p>
@@ -439,6 +462,7 @@ export function BundlesScreen() {
 }
 
 export function MarketingScreen() {
+  const { workspace } = useDemo();
   const [tab, setTab] = useState("campaigns");
   return (
     <DemoReady>
@@ -446,6 +470,7 @@ export function MarketingScreen() {
         const campaigns = data.drafts.filter((d) => d.kind === "campaign");
         const sampleSpend = data.performance.reduce((n, p) => n + Number(p.ad_spend_sar), 0);
         const sampleRevenue = data.performance.reduce((n, p) => n + Number(p.revenue_sar), 0);
+        const clientMode = workspace.reportingMode === "client_export";
         const marketOpp = data.opportunities.filter(
           (o) => o.domain === "marketing" && o.status !== "dismissed",
         );
@@ -460,17 +485,35 @@ export function MarketingScreen() {
               </Link>
             }
           >
+            {workspace.name.startsWith("Aclo") && (
+              <AcloConceptBanner
+                label="MARKETING CREATIVE · INTERNAL BRIEF"
+                imagePath="/aclo-demo/marketing.png"
+                headline="Bring breakfast to the team."
+                description="A sample office sharing story with mini sandwiches, coffee and cake."
+              />
+            )}
             <div className="demo-grid">
               <Stat
-                label="Sample spend"
-                value={formatSar(sampleSpend)}
-                detail="Synthetic 28-day series"
+                label={clientMode ? "Ad spend" : "Sample spend"}
+                value={clientMode ? "Unknown" : formatSar(sampleSpend)}
+                detail={clientMode ? "Not in order export" : "Synthetic 28-day series"}
                 tone="purple"
               />
               <Stat
-                label="Sample revenue"
-                value={formatSar(sampleRevenue)}
-                detail="Not ad-attributed"
+                label={clientMode ? "Historical gross sales" : "Sample revenue"}
+                value={
+                  clientMode
+                    ? formatSar(
+                        data.orderPerformance.reduce((n, p) => n + Number(p.gross_sales_sar), 0),
+                      )
+                    : formatSar(sampleRevenue)
+                }
+                detail={
+                  clientMode
+                    ? "Delivered subtotal · Jan–Sep 2026 · not ad-attributed"
+                    : "Not ad-attributed"
+                }
               />
               <Stat
                 label="ROAS"
@@ -494,7 +537,12 @@ export function MarketingScreen() {
                     <h3>{opp.title}</h3>
                     <p>{opp.description}</p>
                     <div className="demo-opportunity-footer">
-                      <small>Illustrative impact {formatSar(opp.estimated_impact_sar)}</small>
+                      <small>
+                        Impact{" "}
+                        {opp.estimated_impact_sar == null
+                          ? "not measured"
+                          : `${formatSar(opp.estimated_impact_sar)} · illustrative`}
+                      </small>
                       <Link className="text-link" to="/app/marketing/new">
                         Review & build campaign →
                       </Link>
@@ -504,13 +552,29 @@ export function MarketingScreen() {
               </div>
             </Panel>
             <div className="demo-split">
-              <Panel title="Daily Sample Spend vs. Business Revenue">
+              <Panel
+                title={
+                  clientMode
+                    ? "Recent observed gross sales"
+                    : "Daily Sample Spend vs. Business Revenue"
+                }
+              >
                 <BarChart
-                  values={data.performance.slice(-14).map((p) => Number(p.revenue_sar))}
-                  labels={data.performance.slice(-14).map((p) => p.day.slice(5))}
+                  values={
+                    clientMode
+                      ? data.orderPerformance.slice(-14).map((p) => Number(p.gross_sales_sar))
+                      : data.performance.slice(-14).map((p) => Number(p.revenue_sar))
+                  }
+                  labels={
+                    clientMode
+                      ? data.orderPerformance.slice(-14).map((p) => p.day.slice(5))
+                      : data.performance.slice(-14).map((p) => p.day.slice(5))
+                  }
                 />
                 <p className="demo-help">
-                  Revenue is business-level fixture data. It is not attributed to ads.
+                  {clientMode
+                    ? "Observed dates only; dates without records are unknown. Sales are not attributed to ads."
+                    : "Revenue is business-level fixture data. It is not attributed to ads."}
                 </p>
               </Panel>
               <Panel title="Recommended by Yamdy">
@@ -520,8 +584,14 @@ export function MarketingScreen() {
                       <Megaphone size={19} />
                     </span>
                     <div>
-                      <strong>Explore lunch campaign</strong>
-                      <p>Build an internal brief for stronger lunch visibility.</p>
+                      <strong>
+                        {clientMode ? "Explore breakfast box story" : "Explore lunch campaign"}
+                      </strong>
+                      <p>
+                        {clientMode
+                          ? "Build an internal brief around office morning orders."
+                          : "Build an internal brief for stronger lunch visibility."}
+                      </p>
                       <Link className="text-link" to="/app/marketing/new">
                         Build campaign →
                       </Link>
@@ -629,10 +699,10 @@ export function MarketingScreen() {
 
 export function CampaignBuilderScreen() {
   const { workspace } = useDemo();
-  const [title, setTitle] = useState("Lunch Rush Opportunity");
-  const [objective, setObjective] = useState("Increase Lunch Orders");
+  const [title, setTitle] = useState("Aclo Morning Box Story");
+  const [objective, setObjective] = useState("Explore Breakfast Discovery");
   const [productId, setProductId] = useState("");
-  const [budget, setBudget] = useState("1200");
+  const [budget, setBudget] = useState("300");
   const [days, setDays] = useState("14");
   const action = useDemoAction();
   return (
@@ -653,7 +723,7 @@ export function CampaignBuilderScreen() {
               <Panel title="Select Business Objective">
                 <div className="demo-filter-row">
                   {[
-                    "Increase Lunch Orders",
+                    "Explore Breakfast Discovery",
                     "Increase Overall Volume",
                     "Launch New Product",
                     "Boost Weak Branch",
@@ -717,7 +787,7 @@ export function CampaignBuilderScreen() {
                     <ShieldCheck size={20} />
                   </span>
                   <div>
-                    <strong>Suggested placement: lunch discovery</strong>
+                    <strong>Suggested concept: breakfast discovery</strong>
                     <p>
                       Illustrative placement only. HungerStation marketing entitlement is
                       unverified.
@@ -875,8 +945,8 @@ export function BidsScreen() {
               <div className="demo-stack">
                 <Panel title={`${product?.name_en ?? "Product"} — Sponsored Search`}>
                   <p className="demo-help">
-                    The Stitch design shows a bid recommendation for the Olaya radius. Here it is an
-                    editable internal assumption.
+                    The reference design shows a bid recommendation. Here it is an editable internal
+                    assumption.
                   </p>
                   <label className="demo-field">
                     Draft bid (SAR)

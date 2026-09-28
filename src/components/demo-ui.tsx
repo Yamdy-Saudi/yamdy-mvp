@@ -41,6 +41,30 @@ export function DemoNotice({
   );
 }
 
+export function AcloConceptBanner({
+  label = "INTERNAL CREATIVE CONCEPT",
+  imagePath = "/aclo-demo/hero.png",
+  headline = "A little box for every gathering.",
+  description = "Mini sandwiches, sweet bites and drinks inspired by Aclo’s historical orders.",
+}: {
+  label?: string;
+  imagePath?: string;
+  headline?: string;
+  description?: string;
+}) {
+  return (
+    <div className="aclo-concept-banner">
+      <img src={imagePath} alt="Illustrative Aclo food and drink concept" />
+      <div className="aclo-concept-copy">
+        <small>{label}</small>
+        <strong>{headline}</strong>
+        <span>{description}</span>
+        <em>Generated concept image · no live campaign or verified menu listing</em>
+      </div>
+    </div>
+  );
+}
+
 export function Screen({
   eyebrow,
   title,

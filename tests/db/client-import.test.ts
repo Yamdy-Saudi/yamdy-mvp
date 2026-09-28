@@ -17,7 +17,13 @@ test("client aggregate backfill preserves demo history and tenant isolation", as
     await db.exec(await readFile("supabase/test-migrations/000_auth_stub.sql", "utf8"));
     await db.exec("select set_config('app.isolated_test', 'on', false)");
     for (const name of (await readdir("supabase/migrations"))
-      .filter((item) => item.endsWith(".sql") && !item.endsWith("_add_workspace_logo_path.sql"))
+      .filter(
+        (item) =>
+          item.endsWith(".sql") &&
+          !item.endsWith("_add_workspace_logo_path.sql") &&
+          !item.endsWith("_aclo_menu_demo_refresh.sql") &&
+          !item.endsWith("_aclo_campaign_art.sql"),
+      )
       .sort()) {
       await db.exec(await readFile(`supabase/migrations/${name}`, "utf8"));
     }
@@ -62,8 +68,77 @@ test("client aggregate backfill preserves demo history and tenant isolation", as
     await db.exec(
       await readFile("supabase/migrations/20260928170753_grant_aclo_report_access.sql", "utf8"),
     );
+    await db.exec(
+      await readFile("supabase/migrations/20260928173531_aclo_menu_demo_refresh.sql", "utf8"),
+    );
+    await db.exec(
+      await readFile("supabase/migrations/20260928183426_aclo_campaign_art.sql", "utf8"),
+    );
+    assert.deepEqual(
+      (
+        await db.query<{ kind: string; image_path: string }>(
+          "select kind,payload->>'image_path' image_path from public.demo_drafts where workspace_id=$1 and kind in ('promotion','campaign') order by kind",
+          [workspace],
+        )
+      ).rows,
+      [
+        { kind: "campaign", image_path: "/aclo-demo/marketing.png" },
+        { kind: "promotion", image_path: "/aclo-demo/promotion.png" },
+      ],
+    );
+    const menu = (
+      await db.query<{ sku: string; image_path: string; price_basis: string }>(
+        "select sku,image_path,price_basis from public.catalog_products where workspace_id=$1 order by sku",
+        [workspace],
+      )
+    ).rows;
+    assert.equal(menu.length, 10);
+    assert(
+      menu.every(
+        (item) => item.sku.startsWith("ACLO-") && item.image_path.startsWith("/aclo-demo/"),
+      ),
+    );
+    assert.equal(
+      menu.filter((item) => item.price_basis === "historical_single_item_subtotal").length,
+      3,
+    );
+    assert.equal(
+      (
+        await db.query("select day from public.performance_daily where workspace_id=$1", [
+          workspace,
+        ])
+      ).rows.length,
+      0,
+    );
+    assert.equal(
+      (await db.query("select id from public.approval_requests where workspace_id=$1", [workspace]))
+        .rows.length,
+      1,
+    );
 
     await asUser(db, owner);
+    const box = (
+      await db.query<{ id: string }>(
+        "select id from public.catalog_products where workspace_id=$1 and sku='ACLO-BOX-8'",
+        [workspace],
+      )
+    ).rows[0]!;
+    await db.query("select public.demo_save_product_draft($1,$2,$3,$4,$5)", [
+      box.id,
+      "8-Piece Mini Sandwich Box",
+      "علبة ساندويتشات ميني ٨ قطع",
+      "Internal sample",
+      45,
+    ]);
+    assert.equal(
+      (
+        await db.query<{ price_basis: string }>(
+          "select price_basis from public.catalog_products where id=$1",
+          [box.id],
+        )
+      ).rows[0]?.price_basis,
+      "illustrative",
+    );
     const summary = (
       await db.query<{
         days: number;

@@ -196,6 +196,8 @@ export type Database = {
           listing_quality: number;
           is_demo: boolean;
           updated_at: string;
+          image_path: string | null;
+          price_basis: string;
         };
         Insert: {
           id?: string;
@@ -211,6 +213,8 @@ export type Database = {
           listing_quality?: number;
           is_demo?: boolean;
           updated_at?: string;
+          image_path?: string | null;
+          price_basis?: string;
         };
         Update: {
           id?: string;
@@ -226,6 +230,8 @@ export type Database = {
           listing_quality?: number;
           is_demo?: boolean;
           updated_at?: string;
+          image_path?: string | null;
+          price_basis?: string;
         };
         Relationships: [];
       };

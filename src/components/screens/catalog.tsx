@@ -17,12 +17,15 @@ import {
 import { saveProductDraft } from "../../lib/demo";
 import type { DemoData } from "../../lib/demo";
 
-function ProductArt({ name }: { name: string }) {
+function ProductArt({ name, imagePath }: { name: string; imagePath: string | null }) {
   return (
     <div className="demo-product-art" aria-label={`Illustration for ${name}`}>
-      <ChefHat size={42} />
-      <span>{name}</span>
-      <small>Demo menu item</small>
+      {imagePath ? (
+        <img src={imagePath} alt={`Illustrative ${name} concept`} />
+      ) : (
+        <ChefHat size={42} />
+      )}
+      <small>Illustrative concept image · not channel photography</small>
     </div>
   );
 }
@@ -126,13 +129,23 @@ export function ListingsScreen() {
                       return (
                         <tr key={p.id}>
                           <td>
-                            <strong>{p.name_en}</strong>
+                            <div className="demo-product-name">
+                              {p.image_path && <img src={p.image_path} alt="" loading="lazy" />}
+                              <strong>{p.name_en}</strong>
+                            </div>
                             <small>
                               {p.name_ar} · {p.sku}
                             </small>
                           </td>
                           <td>{p.category}</td>
-                          <td>{formatSar(p.price_sar)}</td>
+                          <td>
+                            {formatSar(p.price_sar)}
+                            <small>
+                              {p.price_basis === "historical_single_item_subtotal"
+                                ? "Historical single-item subtotal"
+                                : "Illustrative price"}
+                            </small>
+                          </td>
                           <td>
                             <Pill tone={states.some((s) => !s.is_available) ? "orange" : "green"}>
                               {states.filter((s) => s.is_available).length}/{states.length} sample
@@ -294,7 +307,9 @@ function ProductForm({ product, data }: { product: DemoData["products"][number];
               <div className="demo-kv">
                 <div>
                   <small>Sample cost assumption</small>
-                  <strong>{formatSar(product.cost_sar)}</strong>
+                  <strong>
+                    {product.cost_sar == null ? "Unknown" : formatSar(product.cost_sar)}
+                  </strong>
                 </div>
                 <div>
                   <small>Estimated gross margin</small>
@@ -307,7 +322,10 @@ function ProductForm({ product, data }: { product: DemoData["products"][number];
               </div>
             </div>
             <p className="demo-help">
-              These values do not represent verified COGS or a channel price.
+              {product.price_basis === "historical_single_item_subtotal"
+                ? "This box price matches a historical single-item order subtotal. It does not verify today's channel price."
+                : "This price is illustrative."}{" "}
+              COGS is unknown.
             </p>
           </Panel>
           <Panel title="Branch Stock Availability">
@@ -341,8 +359,10 @@ function ProductForm({ product, data }: { product: DemoData["products"][number];
         </div>
         <div className="demo-stack">
           <Panel title="Product image">
-            <ProductArt name={product.name_en} />
-            <p className="demo-help">Illustrative placeholder. Image publishing is unavailable.</p>
+            <ProductArt name={product.name_en} imagePath={product.image_path} />
+            <p className="demo-help">
+              Generated concept image for an internal draft. Image publishing is unavailable.
+            </p>
           </Panel>
           <Panel title="Listing Quality Health">
             <strong style={{ fontSize: 30, color: "#006235" }}>{product.listing_quality}%</strong>
@@ -506,7 +526,7 @@ function OptimizerContent({ product }: { product: DemoData["products"][number] }
             </button>
           </Panel>
           <Panel title="Listing context">
-            <ProductArt name={product.name_en} />
+            <ProductArt name={product.name_en} imagePath={product.image_path} />
             <p className="demo-help">
               Listing quality {product.listing_quality}% · Sample diagnostic
             </p>

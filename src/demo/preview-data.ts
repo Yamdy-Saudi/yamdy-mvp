@@ -13,6 +13,12 @@ const productIds = [
   "00000000-0000-4000-8000-000000000122",
   "00000000-0000-4000-8000-000000000123",
   "00000000-0000-4000-8000-000000000124",
+  "00000000-0000-4000-8000-000000000125",
+  "00000000-0000-4000-8000-000000000126",
+  "00000000-0000-4000-8000-000000000127",
+  "00000000-0000-4000-8000-000000000128",
+  "00000000-0000-4000-8000-000000000129",
+  "00000000-0000-4000-8000-00000000012a",
 ];
 const opportunityIds = [
   "00000000-0000-4000-8000-000000000131",
@@ -24,20 +30,20 @@ const now = new Date().toISOString();
 
 export const previewWorkspace: WorkspaceSummary = {
   id: workspaceId,
-  name: "Shawarma & Co.",
+  name: "Aclo · concept preview",
   onboardingStage: "complete",
   reportingMode: "demo",
-  logoPath: null,
+  logoPath: "/aclo-logo.jpeg",
   role: "owner",
 };
 
 export const previewData: DemoData = {
-  branches: ["Riyadh — Olaya", "Riyadh — Al Nakheel", "Riyadh — Al Malqa"].map((name, index) => ({
+  branches: ["Breakfast scenario", "Office scenario", "Catering scenario"].map((name, index) => ({
     id: branchIds[index],
     workspace_id: workspaceId,
     brand_id: brandId,
     name,
-    name_ar: ["الرياض — العليا", "الرياض — النخيل", "الرياض — الملقا"][index],
+    name_ar: ["سيناريو الإفطار", "سيناريو المكتب", "سيناريو المناسبات"][index],
     code: `demo-${index}`,
     city: "Riyadh",
     timezone: "Asia/Riyadh",
@@ -45,10 +51,37 @@ export const previewData: DemoData = {
     created_at: now,
   })) as DemoData["branches"],
   products: [
-    ["Classic Burger", "برجر كلاسيك", "Burgers", 42, 16.5, 76],
-    ["Chicken Meal", "وجبة الدجاج", "Meals", 38, 14.2, 82],
-    ["Shawarma Wrap", "ساندويتش شاورما", "Sandwiches", 29, 10.8, 91],
-    ["Family Feast", "وجبة عائلية", "Bundles", 129, 53, 68],
+    [
+      "8-Piece Mini Sandwich Box",
+      "علبة ساندويتشات ميني ٨ قطع",
+      "Mini sandwich boxes",
+      49,
+      null,
+      84,
+    ],
+    [
+      "18-Piece Mini Sandwich Box",
+      "علبة ساندويتشات ميني ١٨ قطعة",
+      "Mini sandwich boxes",
+      99,
+      null,
+      88,
+    ],
+    [
+      "40-Piece Mini Sandwich Box",
+      "علبة ساندويتشات ميني ٤٠ قطعة",
+      "Mini sandwich boxes",
+      199,
+      null,
+      81,
+    ],
+    ["Creamy Chicken Pie", "فطيرة الدجاج الكريمية", "Savory bakes", 29, null, 76],
+    ["Carrot Cake", "كيك الجزر", "Cakes & sweets", 24, null, 79],
+    ["Peach Iced Tea", "شاي خوخ مثلج", "Drinks", 16, null, 83],
+    ["Halloumi, Olives & Za’atar Mini", "ميني حلومي وزيتون وزعتر", "Mini sandwiches", 18, null, 77],
+    ["Spicy Avocado Tuna Mini", "ميني تونة وأفوكادو حارة", "Mini sandwiches", 19, null, 75],
+    ["Coffee of the Day · 1 Liter", "قهوة اليوم · لتر", "Drinks", 42, null, 80],
+    ["Marble Cake", "كيك رخامي", "Cakes & sweets", 22, null, 78],
   ].map(([name, nameAr, category, price, cost, quality], index) => ({
     id: productIds[index],
     workspace_id: workspaceId,
@@ -57,11 +90,24 @@ export const previewData: DemoData = {
     name_en: name,
     name_ar: nameAr,
     category,
-    description_en: `Freshly prepared ${String(name).toLowerCase()} with house ingredients.`,
+    description_en: `Illustrative Aclo menu concept inspired by historical order-item wording: ${String(name)}.`,
     price_sar: price,
     cost_sar: cost,
     listing_quality: quality,
     is_demo: true,
+    image_path: [
+      "/aclo-demo/box-8.png",
+      "/aclo-demo/box-18.png",
+      "/aclo-demo/box-40.png",
+      "/aclo-demo/chicken-pie.png",
+      "/aclo-demo/carrot-cake.png",
+      "/aclo-demo/peach-tea.png",
+      "/aclo-demo/halloumi.png",
+      "/aclo-demo/tuna.png",
+      "/aclo-demo/coffee.png",
+      "/aclo-demo/marble-cake.png",
+    ][index],
+    price_basis: index < 3 ? "historical_single_item_subtotal" : "illustrative",
     updated_at: now,
   })) as DemoData["products"],
   productStates: productIds.flatMap((productId, pi) =>
@@ -70,7 +116,7 @@ export const previewData: DemoData = {
       product_id: productId,
       branch_id: branchId,
       is_available: !(pi === 1 && bi === 0),
-      price_sar: [42, 38, 29, 129][pi],
+      price_sar: [49, 99, 199, 29, 24, 16, 18, 19, 42, 22][pi],
       is_demo: true,
       updated_at: now,
     })),
@@ -78,8 +124,8 @@ export const previewData: DemoData = {
   opportunities: [
     [
       "operational",
-      "Your best-selling Chicken Meal is unavailable",
-      "The sample Olaya branch is unavailable during lunch.",
+      "Check 18-piece box availability in a breakfast scenario",
+      "A simulated breakfast stock interruption. Live availability is unknown.",
       "critical",
       860,
       94,
@@ -87,8 +133,8 @@ export const previewData: DemoData = {
     ],
     [
       "pricing",
-      "Your Classic Burger may be overpriced",
-      "Review a simulated SAR 42 to SAR 39 price test.",
+      "Review an 8-piece box price concept",
+      "Historical single-item order subtotals include SAR 49. A SAR 45 test is illustrative.",
       "high",
       1320,
       78,
@@ -96,8 +142,8 @@ export const previewData: DemoData = {
     ],
     [
       "marketing",
-      "Lunch impressions are falling while conversion remains strong",
-      "Explore an internal lunch campaign brief.",
+      "Explore office breakfast visibility",
+      "Explore an internal breakfast campaign brief; ad attribution is unknown.",
       "medium",
       940,
       68,
@@ -105,8 +151,8 @@ export const previewData: DemoData = {
     ],
     [
       "promotions",
-      "Tuesday afternoon demand is consistently weak",
-      "Explore an internal quiet-hour promotion draft.",
+      "Explore a team breakfast add-on",
+      "Pair sandwich boxes with coffee or cake in an internal concept.",
       "medium",
       620,
       71,
@@ -153,8 +199,12 @@ export const previewData: DemoData = {
       id: "00000000-0000-4000-8000-000000000151",
       workspace_id: workspaceId,
       kind: "promotion",
-      title: "Tuesday Afternoon Boost",
-      payload: { objective: "Boost weak hours", discount: "15% sample offer" },
+      title: "Morning Box + Peach Tea Concept",
+      payload: {
+        objective: "Explore breakfast add-ons",
+        items: ["8-Piece Mini Sandwich Box", "Peach Iced Tea"],
+        price_sar: 59,
+      },
       status: "sample",
       created_by: null,
       is_demo: true,
@@ -165,8 +215,11 @@ export const previewData: DemoData = {
       id: "00000000-0000-4000-8000-000000000152",
       workspace_id: workspaceId,
       kind: "bundle",
-      title: "Family Lunch Combo",
-      payload: { items: ["Chicken Meal", "Shawarma Wrap"], price_sar: 69 },
+      title: "Office Breakfast Sharing Set",
+      payload: {
+        items: ["18-Piece Mini Sandwich Box", "Coffee of the Day · 1 Liter"],
+        price_sar: 129,
+      },
       status: "sample",
       created_by: null,
       is_demo: true,
@@ -177,8 +230,8 @@ export const previewData: DemoData = {
       id: "00000000-0000-4000-8000-000000000153",
       workspace_id: workspaceId,
       kind: "campaign",
-      title: "Lunch Rush Awareness",
-      payload: { objective: "Increase lunch orders", budget_sar: 1200 },
+      title: "Aclo Morning Box Story",
+      payload: { objective: "Explore breakfast discovery", budget_sar: 300 },
       status: "sample",
       created_by: null,
       is_demo: true,
@@ -189,14 +242,14 @@ export const previewData: DemoData = {
   performance: branchIds.flatMap((branchId, bi) =>
     Array.from({ length: 28 }, (_, index) => {
       const day = new Date(Date.now() - (27 - index) * 86400000).toISOString().slice(0, 10);
-      const orders = 48 + ((index * 7 + bi * 3) % 31);
+      const orders = 1 + ((index * 7 + bi * 3) % 5);
       return {
         workspace_id: workspaceId,
         branch_id: branchId,
         day,
         orders,
-        revenue_sar: orders * 39.5,
-        ad_spend_sar: 80 + ((index * 11) % 38),
+        revenue_sar: orders * 99,
+        ad_spend_sar: 0,
         source: "demo",
       };
     }),

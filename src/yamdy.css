@@ -1742,6 +1742,105 @@ a {
   color: #006235;
   text-align: center;
 }
+.demo-product-art img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+}
+.demo-opportunity-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.demo-product-art:has(img) {
+  background: #f7f3ec;
+  overflow: hidden;
+}
+.demo-product-art small {
+  padding: 0 10px 12px;
+}
+.demo-product-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.demo-product-name img,
+.demo-mini-product-image {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex: none;
+}
+.aclo-concept-banner {
+  position: relative;
+  min-height: 210px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #eee8dc;
+  margin-bottom: 18px;
+}
+.aclo-concept-banner > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.aclo-concept-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(227, 237, 249, 0.88),
+    rgba(227, 237, 249, 0.45) 35%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+.aclo-concept-copy {
+  position: relative;
+  z-index: 1;
+  width: min(46%, 480px);
+  min-height: 210px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  color: #18251f;
+}
+.aclo-concept-copy small {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+.aclo-concept-copy strong {
+  font-family: Georgia, serif;
+  font-size: clamp(24px, 3vw, 40px);
+  line-height: 1.05;
+}
+.aclo-concept-copy span {
+  font-size: 13px;
+  max-width: 280px;
+}
+.aclo-concept-copy em {
+  font-size: 10px;
+  color: #576258;
+  font-style: normal;
+}
+@media (max-width: 700px) {
+  .aclo-concept-banner > img {
+    opacity: 0.3;
+  }
+  .aclo-concept-copy {
+    width: 100%;
+  }
+}
 .demo-product-art span {
   font-size: 20px;
   font-weight: 700;

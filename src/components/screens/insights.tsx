@@ -3,6 +3,7 @@ import { ArrowRight, BellRing, CheckCircle2, Clock3, Lightbulb, TrendingUp } fro
 import { useState } from "react";
 import { useDemo } from "../demo-provider";
 import {
+  AcloConceptBanner,
   ActionFeedback,
   BarChart,
   DemoReady,
@@ -67,6 +68,9 @@ export function HomeScreen() {
               </Link>
             }
           >
+            {workspace.name.startsWith("Aclo") && (
+              <AcloConceptBanner label="ACLO MENU STUDIO · ILLUSTRATIVE" />
+            )}
             <div className="demo-grid">
               <Stat
                 label="Needs attention"
@@ -113,13 +117,14 @@ export function HomeScreen() {
                 {importAgeDays(latest) > 2
                   ? `Historical snapshot, ${importAgeDays(latest)} days old`
                   : "Historical export"}{" "}
-                · Demo recommendations below are illustrative and do not use this client data.
+                · Demo scenarios below draw on historical menu terms and order timing; their
+                outcomes are not measured.
               </p>
             )}
             <div className="demo-split">
               <Panel
                 title="Needs your attention"
-                aside={<span className="demo-help">Observed in demo data</span>}
+                aside={<span className="demo-help">Illustrative scenarios</span>}
               >
                 <div className="demo-filter-row" style={{ marginBottom: 16 }}>
                   {["All", "Operational", "Pricing", "Marketing", "Promotions"].map((name) => (
@@ -155,7 +160,12 @@ export function HomeScreen() {
                                 "All branches"}
                             </small>
                             <small>· {formatDate(item.observed_at)}</small>
-                            <small>· Estimated {formatSar(item.estimated_impact_sar)}</small>
+                            <small>
+                              · Impact{" "}
+                              {item.estimated_impact_sar == null
+                                ? "not measured"
+                                : formatSar(item.estimated_impact_sar)}
+                            </small>
                           </div>
                           <div className="demo-actions">
                             {item.domain === "operational" && (
@@ -339,7 +349,11 @@ export function OpportunitiesScreen() {
                           {data.branches.find((b) => b.id === item.branch_id)?.name ??
                             "All branches"}
                         </td>
-                        <td>{formatSar(item.estimated_impact_sar)}</td>
+                        <td>
+                          {item.estimated_impact_sar == null
+                            ? "Not measured"
+                            : formatSar(item.estimated_impact_sar)}
+                        </td>
                         <td>Demo · {formatDate(item.observed_at)}</td>
                         <td>
                           <Pill>{item.status.replaceAll("_", " ")}</Pill>
@@ -369,6 +383,7 @@ export function OpportunitiesScreen() {
 }
 
 export function OpportunityDetailScreen({ id }: { id: string }) {
+  const { workspace } = useDemo();
   const action = useDemoAction();
   return (
     <DemoReady>
@@ -402,12 +417,16 @@ export function OpportunityDetailScreen({ id }: { id: string }) {
             <div className="demo-grid demo-grid--three">
               <Stat
                 label="Estimated impact"
-                value={formatSar(item.estimated_impact_sar)}
+                value={
+                  item.estimated_impact_sar == null
+                    ? "Not measured"
+                    : formatSar(item.estimated_impact_sar)
+                }
                 detail="Illustrative forecast only"
               />
               <Stat
                 label="Confidence"
-                value={`${item.confidence ?? 0}%`}
+                value={item.confidence == null ? "Not measured" : `${item.confidence}%`}
                 detail="Demo model estimate"
                 tone="purple"
               />
@@ -441,18 +460,34 @@ export function OpportunityDetailScreen({ id }: { id: string }) {
                     </div>
                   </div>
                   <p className="demo-help">
-                    This explanation is derived from synthetic fixture data. It is not a live
-                    channel observation.
+                    {workspace.reportingMode === "client_export"
+                      ? "This scenario uses historical menu context, but its proposed action and outcome are illustrative. It is not a live channel observation."
+                      : "This explanation is derived from synthetic fixture data. It is not a live channel observation."}
                   </p>
                 </Panel>
-                <Panel title="Illustrative outcome simulation">
-                  <BarChart
-                    values={[36, 39, 42, 40, 38, 39, 37]}
-                    labels={["P10", "P25", "P50", "P75", "P90", "Now", "Test"]}
-                  />
+                <Panel
+                  title={
+                    workspace.reportingMode === "client_export"
+                      ? "Menu concept"
+                      : "Illustrative outcome simulation"
+                  }
+                >
+                  {workspace.reportingMode === "client_export" && product?.image_path ? (
+                    <img
+                      className="demo-opportunity-image"
+                      src={product.image_path}
+                      alt={`Illustrative ${product.name_en} concept`}
+                    />
+                  ) : (
+                    <BarChart
+                      values={[36, 39, 42, 40, 38, 39, 37]}
+                      labels={["P10", "P25", "P50", "P75", "P90", "Now", "Test"]}
+                    />
+                  )}
                   <p className="demo-help">
-                    Sample distribution only. No competitor feed, elasticity model or causal result
-                    has been connected.
+                    {workspace.reportingMode === "client_export"
+                      ? "This image is generated concept art. The export cannot measure the outcome of this suggestion."
+                      : "Sample distribution only. No competitor feed, elasticity model or causal result has been connected."}
                   </p>
                 </Panel>
                 <Panel title="Engine audit trail">
@@ -495,7 +530,9 @@ export function OpportunityDetailScreen({ id }: { id: string }) {
                     <div>
                       <small>Recommended test</small>
                       <strong>
-                        {item.domain === "pricing" ? "SAR 39 · 7 days" : "Internal demo"}
+                        {item.domain === "pricing" && product
+                          ? `${formatSar(Number(product.price_sar) - 4)} · sample test`
+                          : "Internal demo"}
                       </strong>
                     </div>
                     <div>
@@ -667,7 +704,11 @@ export function HealthScreen() {
                         <td>
                           {data.branches.find((b) => b.id === item.branch_id)?.name} (demo example)
                         </td>
-                        <td>{formatSar(item.estimated_impact_sar)}</td>
+                        <td>
+                          {item.estimated_impact_sar == null
+                            ? "Not measured"
+                            : formatSar(item.estimated_impact_sar)}
+                        </td>
                         <td>{item.status.replaceAll("_", " ")}</td>
                         <td>
                           <Link to="/app/opportunities/$id" params={{ id: item.id }}>
@@ -735,19 +776,38 @@ export function PricingScreen() {
                   <div className="demo-kv">
                     <div>
                       <small>Current sample</small>
-                      <strong>SAR 42</strong>
+                      <strong>
+                        {formatSar(
+                          data.products.find((p) => p.id === pricing.product_id)?.price_sar,
+                        )}
+                      </strong>
                     </div>
                     <div>
                       <small>Proposed test</small>
-                      <strong>SAR 39</strong>
+                      <strong>
+                        {pricing.product_id
+                          ? formatSar(
+                              Number(
+                                data.products.find((p) => p.id === pricing.product_id)?.price_sar ??
+                                  0,
+                              ) - 4,
+                            )
+                          : "Unknown"}
+                      </strong>
                     </div>
                     <div>
                       <small>Estimated impact</small>
-                      <strong>{formatSar(pricing.estimated_impact_sar)}</strong>
+                      <strong>
+                        {pricing.estimated_impact_sar == null
+                          ? "Not measured"
+                          : formatSar(pricing.estimated_impact_sar)}
+                      </strong>
                     </div>
                     <div>
                       <small>Confidence</small>
-                      <strong>{pricing.confidence}%</strong>
+                      <strong>
+                        {pricing.confidence == null ? "Not measured" : `${pricing.confidence}%`}
+                      </strong>
                     </div>
                   </div>
                 </div>
@@ -760,8 +820,8 @@ export function PricingScreen() {
                   labels={data.products.map((p) => p.sku.replace("DEMO-", ""))}
                 />
                 <p className="demo-help">
-                  This compares products within the synthetic menu. No market quartile feed is
-                  connected.
+                  Internal sample menu prices only. For Aclo, the three box prices match single-item
+                  historical order subtotals; current channel prices are unverified.
                 </p>
               </Panel>
               <Panel title="Pricing guardrails">
@@ -815,14 +875,25 @@ export function PricingScreen() {
                           <strong>{p.name_en}</strong>
                           <small>{p.sku}</small>
                         </td>
-                        <td>{formatSar(p.price_sar)}</td>
-                        <td>{formatSar(p.cost_sar)}</td>
+                        <td>
+                          {formatSar(p.price_sar)}
+                          <small>
+                            {p.price_basis === "historical_single_item_subtotal"
+                              ? "Historical subtotal reference"
+                              : "Illustrative"}
+                          </small>
+                        </td>
+                        <td>{p.cost_sar == null ? "Unknown" : formatSar(p.cost_sar)}</td>
                         <td>
                           {p.cost_sar
                             ? `${Math.round((100 * (Number(p.price_sar) - Number(p.cost_sar))) / Number(p.price_sar))}%`
                             : "Unknown"}
                         </td>
-                        <td>{p.sku === "DEMO-BURGER" ? "Test SAR 39" : "Hold sample price"}</td>
+                        <td>
+                          {p.id === pricing?.product_id
+                            ? `Review ${formatSar(Number(p.price_sar) - 4)} demo test`
+                            : "No measured recommendation"}
+                        </td>
                         <td>
                           <Pill tone="purple">Internal only</Pill>
                         </td>
