@@ -27,6 +27,7 @@ export const previewWorkspace: WorkspaceSummary = {
   name: "Shawarma & Co.",
   onboardingStage: "complete",
   reportingMode: "demo",
+  logoPath: null,
   role: "owner",
 };
 

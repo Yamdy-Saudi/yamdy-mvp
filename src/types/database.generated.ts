@@ -643,6 +643,7 @@ export type Database = {
           created_at: string;
           updated_at: string;
           reporting_mode: string;
+          logo_path: string | null;
         };
         Insert: {
           id?: string;
@@ -652,6 +653,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           reporting_mode?: string;
+          logo_path?: string | null;
         };
         Update: {
           id?: string;
@@ -661,6 +663,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           reporting_mode?: string;
+          logo_path?: string | null;
         };
         Relationships: [];
       };

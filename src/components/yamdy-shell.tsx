@@ -26,6 +26,24 @@ export function BrandMark() {
   );
 }
 
+function WorkspaceLogo({
+  workspace,
+  compact = false,
+}: {
+  workspace: WorkspaceSummary;
+  compact?: boolean;
+}) {
+  return workspace.logoPath ? (
+    <img
+      className={`workspace-logo${compact ? " workspace-logo--compact" : ""}`}
+      src={workspace.logoPath}
+      alt=""
+    />
+  ) : (
+    <span className="workspace-switcher__icon">{workspace.name[0]?.toUpperCase()}</span>
+  );
+}
+
 export function OnboardingChrome({ step, children }: { step: 2 | 3; children: ReactNode }) {
   return (
     <div className="onboarding-page">
@@ -106,7 +124,7 @@ export function AppShell({
       <aside className="app-sidebar">
         <BrandMark />
         <div className="workspace-switcher">
-          <span className="workspace-switcher__icon">{workspace.name[0]?.toUpperCase()}</span>
+          <WorkspaceLogo workspace={workspace} />
           {workspaces.length > 1 ? (
             <select
               aria-label="Choose workspace"
@@ -167,7 +185,10 @@ export function AppShell({
       </aside>
       <div className="app-body">
         <header className="app-topbar">
-          <span>{workspace.name}</span>
+          <span className="app-topbar__workspace">
+            {workspace.logoPath && <WorkspaceLogo workspace={workspace} compact />}
+            {workspace.name}
+          </span>
           <div className="header-utilities">
             <span className="language-chip">
               EN <span>│</span> العربية

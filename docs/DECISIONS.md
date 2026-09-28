@@ -1,5 +1,9 @@
 # Architecture decisions and open questions
 
+## Client workspace branding (2026-09-28)
+
+- The owner supplied the Aclo wordmark. The original JPEG is kept unchanged as a version-controlled public asset, and the selected Aclo workspace stores its relative asset path in `workspaces.logo_path`. The UI shows it beside the workspace name while retaining Yamdy's own product mark. Other workspaces retain their initial-letter icon.
+
 ## Client order-report import (2026-09-28)
 
 - The owner chose to convert the current demo workspace to the restaurant in nine HungerStation order-detail exports. The files cover one store, 582 unique orders, and 211 observed dates from 2026-01-01 through 2026-09-27. The import retains daily aggregates only. The one-time aggregate backfill is version-controlled; raw order IDs, addresses, and item strings stay outside the repository and database.

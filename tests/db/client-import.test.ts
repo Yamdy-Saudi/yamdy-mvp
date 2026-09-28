@@ -17,7 +17,7 @@ test("client aggregate backfill preserves demo history and tenant isolation", as
     await db.exec(await readFile("supabase/test-migrations/000_auth_stub.sql", "utf8"));
     await db.exec("select set_config('app.isolated_test', 'on', false)");
     for (const name of (await readdir("supabase/migrations"))
-      .filter((item) => item.endsWith(".sql"))
+      .filter((item) => item.endsWith(".sql") && !item.endsWith("_add_workspace_logo_path.sql"))
       .sort()) {
       await db.exec(await readFile(`supabase/migrations/${name}`, "utf8"));
     }
@@ -45,6 +45,18 @@ test("client aggregate backfill preserves demo history and tenant isolation", as
     );
     await db.exec(
       await readFile("supabase/migrations/20260928165804_aclo_order_backfill.sql", "utf8"),
+    );
+    await db.exec(
+      await readFile("supabase/migrations/20260928171431_add_workspace_logo_path.sql", "utf8"),
+    );
+    assert.equal(
+      (
+        await db.query<{ logo_path: string }>(
+          "select logo_path from public.workspaces where id=$1",
+          [workspace],
+        )
+      ).rows[0]?.logo_path,
+      "/aclo-logo.jpeg",
     );
     await db.query("update auth.users set email='ahmad.agha@yamdy.net' where id=$1", [other]);
     await db.exec(

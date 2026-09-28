@@ -26,6 +26,7 @@ test("the client report is the default when an account has multiple workspaces",
     name: "Existing demo",
     onboardingStage: "complete",
     reportingMode: "demo",
+    logoPath: null,
     role: "owner",
   };
   const client: WorkspaceSummary = {
@@ -33,6 +34,7 @@ test("the client report is the default when an account has multiple workspaces",
     name: "Aclo - Al Muruj",
     onboardingStage: "complete",
     reportingMode: "client_export",
+    logoPath: "/aclo-logo.jpeg",
     role: "viewer",
   };
   assert.equal(chooseWorkspace([demo, client])?.id, "client");

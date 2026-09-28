@@ -8,6 +8,7 @@ export type WorkspaceSummary = {
   name: string;
   onboardingStage: "connect" | "import" | "complete";
   reportingMode: "demo" | "client_export";
+  logoPath: string | null;
   role: string;
 };
 
@@ -64,7 +65,7 @@ export async function loadWorkspacesWith(
   if (!memberships?.length) return [];
   const { data: workspaces, error } = await client
     .from("workspaces")
-    .select("id, name, onboarding_stage, reporting_mode")
+    .select("id, name, onboarding_stage, reporting_mode, logo_path")
     .in(
       "id",
       memberships.map((membership) => membership.workspace_id),
@@ -74,6 +75,7 @@ export async function loadWorkspacesWith(
     id: workspace.id,
     name: workspace.name,
     reportingMode: workspace.reporting_mode === "client_export" ? "client_export" : "demo",
+    logoPath: workspace.logo_path,
     onboardingStage:
       workspace.onboarding_stage === "import" || workspace.onboarding_stage === "complete"
         ? workspace.onboarding_stage
