@@ -16,6 +16,7 @@ test("demo workflow preserves tenant boundaries and never claims live publicatio
   const db = new PGlite();
   try {
     await db.exec(await readFile("supabase/test-migrations/000_auth_stub.sql", "utf8"));
+    await db.exec("select set_config('app.isolated_test', 'on', false)");
     for (const name of (await readdir("supabase/migrations"))
       .filter((item) => item.endsWith(".sql"))
       .sort()) {

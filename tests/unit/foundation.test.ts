@@ -4,7 +4,11 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { can, canAccessBranch } from "../../src/domain/permissions";
 import { nextOnboardingStage, validateWorkspaceInput } from "../../src/domain/onboarding";
 import { mockHungerStationAdapter } from "../../src/integrations/hungerstation/mock";
-import { createWorkspaceAccountWith } from "../../src/lib/auth";
+import {
+  chooseWorkspace,
+  createWorkspaceAccountWith,
+  type WorkspaceSummary,
+} from "../../src/lib/auth";
 import type { Database } from "../../src/types/database.generated";
 
 const validAccount = {
@@ -15,6 +19,24 @@ const validAccount = {
   primaryRole: "Owner / Founder",
   acceptedTerms: true,
 };
+
+test("the client report is the default when an account has multiple workspaces", () => {
+  const demo: WorkspaceSummary = {
+    id: "demo",
+    name: "Existing demo",
+    onboardingStage: "complete",
+    reportingMode: "demo",
+    role: "owner",
+  };
+  const client: WorkspaceSummary = {
+    id: "client",
+    name: "Aclo - Al Muruj",
+    onboardingStage: "complete",
+    reportingMode: "client_export",
+    role: "viewer",
+  };
+  assert.equal(chooseWorkspace([demo, client])?.id, "client");
+});
 
 test("roles enforce management and financial approval distinctions", () => {
   assert.equal(can("owner", "connections.manage"), true);

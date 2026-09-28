@@ -138,12 +138,14 @@ export function PromotionsScreen() {
                         value={branchId}
                         onChange={(e) => setBranchId(e.target.value)}
                       >
-                        <option value="all">All demo branches</option>
-                        {data.branches.map((b) => (
-                          <option value={b.id} key={b.id}>
-                            {b.name}
-                          </option>
-                        ))}
+                        <option value="all">Illustrative scope only</option>
+                        {data.branches
+                          .filter((b) => b.is_demo && !b.archived_at)
+                          .map((b) => (
+                            <option value={b.id} key={b.id}>
+                              {b.name}
+                            </option>
+                          ))}
                       </select>
                     </label>
                   </div>
@@ -346,8 +348,8 @@ export function BundlesScreen() {
                 </Panel>
                 <Panel title="Branch Availability & Serving Schedule">
                   <p className="demo-help">
-                    Available for internal planning across {data.branches.length} demo branches.
-                    Live schedule publishing is disabled.
+                    This sample bundle is not mapped to the client's real branch. Live schedule
+                    publishing is disabled.
                   </p>
                   <Pill tone="purple">Mock channel</Pill>
                 </Panel>

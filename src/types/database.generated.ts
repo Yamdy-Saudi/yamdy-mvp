@@ -124,6 +124,7 @@ export type Database = {
           timezone: string;
           is_demo: boolean;
           created_at: string;
+          archived_at: string | null;
         };
         Insert: {
           id?: string;
@@ -136,6 +137,7 @@ export type Database = {
           timezone?: string;
           is_demo?: boolean;
           created_at?: string;
+          archived_at?: string | null;
         };
         Update: {
           id?: string;
@@ -148,6 +150,7 @@ export type Database = {
           timezone?: string;
           is_demo?: boolean;
           created_at?: string;
+          archived_at?: string | null;
         };
         Relationships: [];
       };
@@ -415,6 +418,108 @@ export type Database = {
         };
         Relationships: [];
       };
+      order_import_batches: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          branch_id: string;
+          source: string;
+          source_files_sha256: string;
+          source_store_sha256: string;
+          source_file_count: number;
+          source_order_count: number;
+          first_order_day: string;
+          last_order_day: string;
+          imported_at: string;
+        };
+        Insert: {
+          id?: string;
+          workspace_id: string;
+          branch_id: string;
+          source: string;
+          source_files_sha256: string;
+          source_store_sha256: string;
+          source_file_count: number;
+          source_order_count: number;
+          first_order_day: string;
+          last_order_day: string;
+          imported_at?: string;
+        };
+        Update: {
+          id?: string;
+          workspace_id?: string;
+          branch_id?: string;
+          source?: string;
+          source_files_sha256?: string;
+          source_store_sha256?: string;
+          source_file_count?: number;
+          source_order_count?: number;
+          first_order_day?: string;
+          last_order_day?: string;
+          imported_at?: string;
+        };
+        Relationships: [];
+      };
+      order_performance_daily: {
+        Row: {
+          workspace_id: string;
+          branch_id: string;
+          import_batch_id: string;
+          day: string;
+          delivered_orders: number;
+          cancelled_orders: number;
+          complaint_orders: number;
+          gross_sales_sar: number;
+          reported_payout_sar: number;
+          estimated_earnings_sar: number;
+          vendor_discount_sar: number;
+          commission_sar: number;
+          online_payment_fee_sar: number;
+          operational_charges_sar: number;
+          ads_fee_sar: number;
+          delivery_minutes_sum: number;
+          delivery_minutes_count: number;
+        };
+        Insert: {
+          workspace_id: string;
+          branch_id: string;
+          import_batch_id: string;
+          day: string;
+          delivered_orders: number;
+          cancelled_orders: number;
+          complaint_orders: number;
+          gross_sales_sar: number;
+          reported_payout_sar: number;
+          estimated_earnings_sar: number;
+          vendor_discount_sar: number;
+          commission_sar: number;
+          online_payment_fee_sar: number;
+          operational_charges_sar: number;
+          ads_fee_sar: number;
+          delivery_minutes_sum: number;
+          delivery_minutes_count: number;
+        };
+        Update: {
+          workspace_id?: string;
+          branch_id?: string;
+          import_batch_id?: string;
+          day?: string;
+          delivered_orders?: number;
+          cancelled_orders?: number;
+          complaint_orders?: number;
+          gross_sales_sar?: number;
+          reported_payout_sar?: number;
+          estimated_earnings_sar?: number;
+          vendor_discount_sar?: number;
+          commission_sar?: number;
+          online_payment_fee_sar?: number;
+          operational_charges_sar?: number;
+          ads_fee_sar?: number;
+          delivery_minutes_sum?: number;
+          delivery_minutes_count?: number;
+        };
+        Relationships: [];
+      };
       performance_daily: {
         Row: {
           workspace_id: string;
@@ -537,6 +642,7 @@ export type Database = {
           onboarding_stage: string;
           created_at: string;
           updated_at: string;
+          reporting_mode: string;
         };
         Insert: {
           id?: string;
@@ -545,6 +651,7 @@ export type Database = {
           onboarding_stage?: string;
           created_at?: string;
           updated_at?: string;
+          reporting_mode?: string;
         };
         Update: {
           id?: string;
@@ -553,6 +660,7 @@ export type Database = {
           onboarding_stage?: string;
           created_at?: string;
           updated_at?: string;
+          reporting_mode?: string;
         };
         Relationships: [];
       };

@@ -16,6 +16,13 @@ import {
   useDemoAction,
 } from "../demo-ui";
 import { updateOpportunity } from "../../lib/demo";
+import {
+  formatImportedSar,
+  importAgeDays,
+  importedRange,
+  latestImportedDay,
+  sumImported,
+} from "../../lib/order-performance";
 
 const domainTone = (domain: string) =>
   domain === "operational"
@@ -43,7 +50,12 @@ export function HomeScreen() {
         const week = data.performance.filter(
           (item) => new Date(item.day) >= new Date(Date.now() - 7 * 86400000),
         );
-        const revenue = week.reduce((sum, item) => sum + Number(item.revenue_sar), 0);
+        const realMode = workspace.reportingMode === "client_export";
+        const latest = latestImportedDay(data);
+        const realWeek = realMode ? importedRange(data, 7) : [];
+        const revenue = realMode
+          ? sumImported(realWeek, "gross_sales_sar")
+          : week.reduce((sum, item) => sum + Number(item.revenue_sar), 0);
         return (
           <Screen
             eyebrow="OPPORTUNITY-FIRST OPERATIONS"
@@ -69,16 +81,41 @@ export function HomeScreen() {
                 tone="purple"
               />
               <Stat
-                label="Sample 7-day revenue"
-                value={formatSar(revenue)}
-                detail="Synthetic orders · not channel data"
+                label={realMode ? "Gross sales · last 7 calendar days" : "Sample 7-day revenue"}
+                value={
+                  realMode
+                    ? latest
+                      ? formatImportedSar(revenue)
+                      : "Unavailable"
+                    : formatSar(revenue)
+                }
+                detail={
+                  realMode
+                    ? `Delivered subtotal · through ${latest ?? "no import"}`
+                    : "Synthetic orders · not channel data"
+                }
               />
               <Stat
                 label="Imported branches"
-                value={data.branches.length}
-                detail="Mock HungerStation mapping"
+                value={
+                  realMode
+                    ? data.branches.filter((b) => !b.archived_at && !b.is_demo).length
+                    : data.branches.length
+                }
+                detail={
+                  realMode ? "From order export · no live connection" : "Mock HungerStation mapping"
+                }
               />
             </div>
+            {realMode && latest && (
+              <p className="demo-help">
+                HungerStation order report through {formatDate(latest)} ·{" "}
+                {importAgeDays(latest) > 2
+                  ? `Historical snapshot, ${importAgeDays(latest)} days old`
+                  : "Historical export"}{" "}
+                · Demo recommendations below are illustrative and do not use this client data.
+              </p>
+            )}
             <div className="demo-split">
               <Panel
                 title="Needs your attention"
@@ -521,34 +558,45 @@ export function OpportunityDetailScreen({ id }: { id: string }) {
 }
 
 export function HealthScreen() {
+  const { workspace } = useDemo();
   const [branchId, setBranchId] = useState("all");
   return (
     <DemoReady>
       {(data) => {
+        const activeBranches = data.branches.filter((branch) => !branch.archived_at);
+        const clientMode = workspace.reportingMode === "client_export";
         const issues = data.opportunities.filter(
           (item) =>
             !["dismissed", "resolved", "simulated"].includes(item.status) &&
-            (branchId === "all" || item.branch_id === branchId),
+            (clientMode || branchId === "all" || item.branch_id === branchId),
         );
         return (
           <Screen
             eyebrow="OPERATIONS DIAGNOSTIC"
             title="Restaurant Health"
-            subtitle="Sample signals across your imported demo branches."
+            subtitle={
+              workspace.reportingMode === "client_export"
+                ? "The order export supports performance metrics. Health diagnostics below remain illustrative."
+                : "Sample signals across your imported demo branches."
+            }
             actions={
-              <select
-                aria-label="Select branch"
-                className="demo-select"
-                value={branchId}
-                onChange={(e) => setBranchId(e.target.value)}
-              >
-                <option value="all">All branches ({data.branches.length})</option>
-                {data.branches.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
+              clientMode ? (
+                <span className="demo-label">DEMO DIAGNOSTICS ONLY</span>
+              ) : (
+                <select
+                  aria-label="Select branch"
+                  className="demo-select"
+                  value={branchId}
+                  onChange={(e) => setBranchId(e.target.value)}
+                >
+                  <option value="all">All active branches ({activeBranches.length})</option>
+                  {activeBranches.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              )
             }
           >
             <div className="demo-grid">
@@ -616,7 +664,9 @@ export function HealthScreen() {
                         <td>
                           <strong>{item.title}</strong>
                         </td>
-                        <td>{data.branches.find((b) => b.id === item.branch_id)?.name}</td>
+                        <td>
+                          {data.branches.find((b) => b.id === item.branch_id)?.name} (demo example)
+                        </td>
                         <td>{formatSar(item.estimated_impact_sar)}</td>
                         <td>{item.status.replaceAll("_", " ")}</td>
                         <td>
@@ -795,7 +845,137 @@ export function PricingScreen() {
 }
 
 export function PerformanceScreen() {
+  const { workspace } = useDemo();
   const [view, setView] = useState("14 days");
+  if (workspace.reportingMode === "client_export") {
+    return (
+      <DemoReady>
+        {(data) => {
+          const days = view === "14 days" ? 14 : 28;
+          const rows = importedRange(data, days);
+          const latest = latestImportedDay(data);
+          const delivered = sumImported(rows, "delivered_orders");
+          const cancelled = sumImported(rows, "cancelled_orders");
+          const complaints = sumImported(rows, "complaint_orders");
+          const gross = sumImported(rows, "gross_sales_sar");
+          const payout = sumImported(rows, "reported_payout_sar");
+          const earnings = sumImported(rows, "estimated_earnings_sar");
+          const fees =
+            sumImported(rows, "commission_sar") +
+            sumImported(rows, "online_payment_fee_sar") +
+            sumImported(rows, "operational_charges_sar") +
+            sumImported(rows, "ads_fee_sar");
+          const minutesCount = sumImported(rows, "delivery_minutes_count");
+          const averageMinutes = minutesCount
+            ? Math.round(sumImported(rows, "delivery_minutes_sum") / minutesCount)
+            : null;
+          return (
+            <Screen
+              eyebrow="OBSERVED ORDER PERFORMANCE"
+              title="Performance & Experiments"
+              subtitle={
+                latest
+                  ? `HungerStation order export · ${days} calendar days ending ${formatDate(latest)} · ${importAgeDays(latest) > 2 ? "Stale historical snapshot" : "Historical snapshot"}`
+                  : "No client order export is available."
+              }
+              actions={
+                <select
+                  className="demo-select"
+                  aria-label="Performance range"
+                  value={view}
+                  onChange={(event) => setView(event.target.value)}
+                >
+                  <option>14 days</option>
+                  <option>28 days</option>
+                </select>
+              }
+            >
+              <div className="demo-grid">
+                <Stat
+                  label="Gross sales"
+                  value={latest ? formatImportedSar(gross) : "Unavailable"}
+                  detail="Delivered order subtotal, before discounts"
+                />
+                <Stat
+                  label="Delivered orders"
+                  value={delivered}
+                  detail={`${cancelled} cancelled · ${complaints} complaints`}
+                />
+                <Stat
+                  label="Reported payout"
+                  value={latest ? formatImportedSar(payout) : "Unavailable"}
+                  detail="As stated in the export"
+                />
+                <Stat
+                  label="Estimated earnings"
+                  value={latest ? formatImportedSar(earnings) : "Unavailable"}
+                  detail="Separate from reported payout"
+                />
+              </div>
+              <div className="demo-grid demo-grid--three">
+                <Stat
+                  label="Reported fees"
+                  value={latest ? formatImportedSar(fees) : "Unavailable"}
+                  detail="Commission, payment, operations and Ads Fee"
+                />
+                <Stat
+                  label="Vendor discounts"
+                  value={
+                    latest
+                      ? formatImportedSar(sumImported(rows, "vendor_discount_sar"))
+                      : "Unavailable"
+                  }
+                />
+                <Stat
+                  label="Average delivery"
+                  value={averageMinutes === null ? "Unavailable" : `${averageMinutes} min`}
+                  detail="Delivered orders with timestamps"
+                />
+              </div>
+              <Panel title="Daily gross sales" aside={<Pill tone="green">Observed export</Pill>}>
+                {rows.length ? (
+                  <BarChart
+                    values={rows.map((row) => Number(row.gross_sales_sar))}
+                    labels={rows.map((row) => row.day.slice(5))}
+                    ariaLabel="Observed daily gross sales from the HungerStation order export"
+                  />
+                ) : (
+                  <Empty
+                    title="No reported orders in this period"
+                    detail="The export has no records for this range."
+                  />
+                )}
+                <p className="demo-help">
+                  {rows.length} of {days} calendar days have order records. Missing dates are
+                  unknown, not zero sales. Ads Fee is a reported deduction and does not establish
+                  campaign spend or ROAS.
+                </p>
+              </Panel>
+              <Panel
+                title="Illustrative Yamdy interventions"
+                aside={<Pill tone="purple">Demo only</Pill>}
+              >
+                <div className="demo-card-list">
+                  {data.opportunities.slice(0, 3).map((item) => (
+                    <div className="demo-sample-card" key={item.id}>
+                      <strong>{item.title}</strong>
+                      <p>
+                        Sample workflow. This recommendation and its projected impact are not
+                        derived from the client's order export.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <p className="demo-help">
+                  No observed intervention impact or causal sales lift is available.
+                </p>
+              </Panel>
+            </Screen>
+          );
+        }}
+      </DemoReady>
+    );
+  }
   return (
     <DemoReady>
       {(data) => {

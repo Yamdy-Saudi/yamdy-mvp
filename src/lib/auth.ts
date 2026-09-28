@@ -7,8 +7,22 @@ export type WorkspaceSummary = {
   id: string;
   name: string;
   onboardingStage: "connect" | "import" | "complete";
+  reportingMode: "demo" | "client_export";
   role: string;
 };
+
+export const SELECTED_WORKSPACE_KEY = "yamdy.selectedWorkspaceId";
+
+export function chooseWorkspace(workspaces: WorkspaceSummary[]): WorkspaceSummary | null {
+  const saved =
+    typeof window === "undefined" ? null : window.localStorage.getItem(SELECTED_WORKSPACE_KEY);
+  return (
+    workspaces.find((workspace) => workspace.id === saved) ??
+    workspaces.find((workspace) => workspace.reportingMode === "client_export") ??
+    workspaces[0] ??
+    null
+  );
+}
 
 function configuredClient() {
   const client = getSupabase();
@@ -32,29 +46,40 @@ export async function loadWorkspace(): Promise<WorkspaceSummary | null> {
 export async function loadWorkspaceWith(
   client: SupabaseClient<Database>,
 ): Promise<WorkspaceSummary | null> {
+  return chooseWorkspace(await loadWorkspacesWith(client));
+}
+
+export async function loadWorkspaces(): Promise<WorkspaceSummary[]> {
+  return loadWorkspacesWith(configuredClient());
+}
+
+export async function loadWorkspacesWith(
+  client: SupabaseClient<Database>,
+): Promise<WorkspaceSummary[]> {
   const { data: memberships, error: membershipError } = await client
     .from("workspace_memberships")
     .select("workspace_id, role")
-    .eq("status", "active")
-    .limit(1);
+    .eq("status", "active");
   if (membershipError) throw membershipError;
-  const membership = memberships?.[0] as { workspace_id: string; role: string } | undefined;
-  if (!membership) return null;
-  const { data: workspace, error } = await client
+  if (!memberships?.length) return [];
+  const { data: workspaces, error } = await client
     .from("workspaces")
-    .select("id, name, onboarding_stage")
-    .eq("id", membership.workspace_id)
-    .single();
+    .select("id, name, onboarding_stage, reporting_mode")
+    .in(
+      "id",
+      memberships.map((membership) => membership.workspace_id),
+    );
   if (error) throw error;
-  return {
+  return (workspaces ?? []).map((workspace) => ({
     id: workspace.id,
     name: workspace.name,
+    reportingMode: workspace.reporting_mode === "client_export" ? "client_export" : "demo",
     onboardingStage:
       workspace.onboarding_stage === "import" || workspace.onboarding_stage === "complete"
         ? workspace.onboarding_stage
         : "connect",
-    role: membership.role,
-  };
+    role: memberships.find((membership) => membership.workspace_id === workspace.id)!.role,
+  }));
 }
 
 export async function createWorkspaceAccount(input: {

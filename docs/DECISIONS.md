@@ -1,5 +1,14 @@
 # Architecture decisions and open questions
 
+## Client order-report import (2026-09-28)
+
+- The owner chose to convert the current demo workspace to the restaurant in nine HungerStation order-detail exports. The files cover one store, 582 unique orders, and 211 observed dates from 2026-01-01 through 2026-09-27. The import retains daily aggregates only. The one-time aggregate backfill is version-controlled; raw order IDs, addresses, and item strings stay outside the repository and database.
+- Delivered order subtotal is labeled **gross sales**. Reported payout and estimated earnings remain separate because the export does not reconcile them to the same measure. Cancelled orders are counted, but their order amounts are excluded from delivered-order financial totals. A date absent from the exports is unknown, not asserted to be zero orders.
+- The new client branch replaces mock branches in active selectors; historical demo branches and their audit references remain archived. Unsupported catalog, opportunity, promotion, and advertising examples stay visibly marked as demo and do not claim to describe the client branch. No HungerStation API connection or customer-visible publication is inferred from the report.
+- The owner selected the later of two existing Aclo demo workspaces, created 2026-09-27 17:10 UTC. The project-scoped `supabase-yamdy` MCP applied the schema and backfill migrations. Hosted read-only verification found one active real branch, three archived demo branches, 211 observed days, 577 delivered orders, 5 cancellations, SAR 62,296.00 delivered gross sales, and SAR 27,437.84 reported payout. The other three workspaces remain in demo mode.
+- Browser roles have read access to these aggregate tables only when workspace and branch RLS permits it. A follow-up migration removed the default write grants for `anon` and `authenticated`; hosted privilege checks and PGlite tests confirm the restriction.
+- The owner asked for `ahmad.agha@yamdy.net` to see the converted Aclo workspace. A hosted migration added that account as an active viewer with access to the imported branch. The account also owns Sultan Burger, so the app now offers a workspace selector and defaults to the client report until a choice is saved.
+
 ## Demo product decisions (2026-09-26)
 
 - The owner authorized the remaining product screens as demo workflows until HungerStation access is available. Screens 4–18 use the inspected Stitch exports, explicitly labeled sample values, internal drafts, and simulated outcomes. Marketing spend, opportunity impact, and performance values are synthetic; they do not claim attribution.

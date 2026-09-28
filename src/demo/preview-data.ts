@@ -26,6 +26,7 @@ export const previewWorkspace: WorkspaceSummary = {
   id: workspaceId,
   name: "Shawarma & Co.",
   onboardingStage: "complete",
+  reportingMode: "demo",
   role: "owner",
 };
 
@@ -199,6 +200,8 @@ export const previewData: DemoData = {
       };
     }),
   ) as DemoData["performance"],
+  orderPerformance: [],
+  orderImports: [],
   memberships: [
     {
       id: "00000000-0000-4000-8000-000000000161",

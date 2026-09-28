@@ -27,6 +27,7 @@ export function DemoProvider({
     try {
       if (
         workspace.onboardingStage === "complete" &&
+        workspace.reportingMode === "demo" &&
         ["owner", "general_manager", "ecommerce_manager"].includes(workspace.role)
       ) {
         await bootstrapDemo(workspace.id);
@@ -37,7 +38,7 @@ export function DemoProvider({
     } finally {
       setLoading(false);
     }
-  }, [workspace.id, workspace.onboardingStage, workspace.role]);
+  }, [workspace.id, workspace.onboardingStage, workspace.reportingMode, workspace.role]);
   useEffect(() => {
     void refresh();
   }, [refresh]);

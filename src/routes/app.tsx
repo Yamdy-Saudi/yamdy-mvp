@@ -13,7 +13,7 @@ function AppLayout() {
     return <div className="loading-state">No workspace assigned to this account.</div>;
   return (
     <DemoProvider workspace={state.workspace}>
-      <AppShell workspace={state.workspace}>
+      <AppShell workspace={state.workspace} workspaces={state.workspaces}>
         <Outlet />
       </AppShell>
     </DemoProvider>

@@ -14,15 +14,24 @@ export function formatSar(value: number | string | null | undefined) {
 
 export function formatDate(value: string | null | undefined) {
   if (!value) return "—";
-  return new Intl.DateTimeFormat("en-SA", { dateStyle: "medium" }).format(new Date(value));
+  return new Intl.DateTimeFormat("en-SA", {
+    dateStyle: "medium",
+    timeZone: "Asia/Riyadh",
+  }).format(new Date(value));
 }
 
-export function DemoNotice({ children }: { children?: ReactNode }) {
+export function DemoNotice({
+  children,
+  title = "Demo workspace",
+}: {
+  children?: ReactNode;
+  title?: string;
+}) {
   return (
     <div className="demo-notice" role="note">
       <Sparkles size={17} />
       <div>
-        <strong>Demo workspace</strong>
+        <strong>{title}</strong>
         <span>
           {children ??
             "All figures and recommendations on this page are sample data. No HungerStation action is sent."}
@@ -45,6 +54,7 @@ export function Screen({
   actions?: ReactNode;
   children: ReactNode;
 }) {
+  const { workspace } = useDemo();
   return (
     <div className="demo-screen">
       <header className="demo-page-heading">
@@ -55,7 +65,14 @@ export function Screen({
         </div>
         {actions && <div className="demo-page-actions">{actions}</div>}
       </header>
-      <DemoNotice />
+      {workspace.reportingMode === "client_export" ? (
+        <DemoNotice title="Historical client report + demo examples">
+          Order figures come from the dated HungerStation export. Recommendations, catalog,
+          marketing, and approval examples are simulations; no live channel action is sent.
+        </DemoNotice>
+      ) : (
+        <DemoNotice />
+      )}
       {children}
     </div>
   );
@@ -166,13 +183,15 @@ export function Empty({ title, detail }: { title: string; detail: string }) {
 export function BarChart({
   values,
   labels,
+  ariaLabel = "Sample performance bar chart",
 }: {
   values: readonly number[];
   labels?: readonly string[];
+  ariaLabel?: string;
 }) {
   const max = Math.max(...values, 1);
   return (
-    <div className="demo-bars" role="img" aria-label="Sample performance bar chart">
+    <div className="demo-bars" role="img" aria-label={ariaLabel}>
       {values.map((value, index) => (
         <div
           key={index}

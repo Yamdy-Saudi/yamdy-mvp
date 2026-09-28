@@ -5,6 +5,7 @@ import prettier from "prettier";
 const db = new PGlite();
 const bootstrap = await readFile("supabase/test-migrations/000_auth_stub.sql", "utf8");
 await db.exec(bootstrap);
+await db.exec("select set_config('app.isolated_test', 'on', false)");
 for (const name of (await readdir("supabase/migrations"))
   .filter((name) => name.endsWith(".sql"))
   .sort()) {

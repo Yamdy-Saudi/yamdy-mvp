@@ -1,13 +1,28 @@
 import { useEffect, useState } from "react";
-import { getCurrentUser, loadWorkspace, type WorkspaceSummary } from "../lib/auth";
+import {
+  chooseWorkspace,
+  getCurrentUser,
+  loadWorkspaces,
+  type WorkspaceSummary,
+} from "../lib/auth";
 import { getSupabase } from "../lib/supabase";
 
 type State =
-  | { loading: true; workspace: null; error: null }
-  | { loading: false; workspace: WorkspaceSummary | null; error: string | null };
+  | { loading: true; workspace: null; workspaces: []; error: null }
+  | {
+      loading: false;
+      workspace: WorkspaceSummary | null;
+      workspaces: WorkspaceSummary[];
+      error: string | null;
+    };
 
 export function useWorkspace(): State {
-  const [state, setState] = useState<State>({ loading: true, workspace: null, error: null });
+  const [state, setState] = useState<State>({
+    loading: true,
+    workspace: null,
+    workspaces: [],
+    error: null,
+  });
   useEffect(() => {
     let active = true;
     async function refresh() {
@@ -17,6 +32,7 @@ export function useWorkspace(): State {
             setState({
               loading: false,
               workspace: null,
+              workspaces: [],
               error:
                 "Supabase is not configured. Copy .env.example to .env.local and add the local publishable key.",
             });
@@ -27,13 +43,20 @@ export function useWorkspace(): State {
           if (active) window.location.replace("/signin");
           return;
         }
-        const workspace = await loadWorkspace();
-        if (active) setState({ loading: false, workspace, error: null });
+        const workspaces = await loadWorkspaces();
+        if (active)
+          setState({
+            loading: false,
+            workspace: chooseWorkspace(workspaces),
+            workspaces,
+            error: null,
+          });
       } catch (error) {
         if (active)
           setState({
             loading: false,
             workspace: null,
+            workspaces: [],
             error: error instanceof Error ? error.message : "Could not load workspace.",
           });
       }

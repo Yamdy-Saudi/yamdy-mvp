@@ -432,7 +432,11 @@ export function SettingsScreen() {
           <Screen
             eyebrow="WORKSPACE ADMINISTRATION"
             title="Settings & Workspace Administration"
-            subtitle="Manage profile and review demo branch, role and connection boundaries."
+            subtitle={
+              workspace.reportingMode === "client_export"
+                ? "Manage your workspace and review the report-imported branch. Demo workflows remain separate."
+                : "Manage profile and review demo branch, role and connection boundaries."
+            }
             actions={
               <button
                 className="primary-button"
@@ -484,19 +488,23 @@ export function SettingsScreen() {
                         </tr>
                       </thead>
                       <tbody>
-                        {data.branches.map((branch) => (
-                          <tr key={branch.id}>
-                            <td>
-                              <strong>{branch.name}</strong>
-                              <small>{branch.name_ar}</small>
-                            </td>
-                            <td>{branch.city}</td>
-                            <td>{branch.timezone}</td>
-                            <td>
-                              <Pill tone="purple">Demo import</Pill>
-                            </td>
-                          </tr>
-                        ))}
+                        {data.branches
+                          .filter((branch) => !branch.archived_at)
+                          .map((branch) => (
+                            <tr key={branch.id}>
+                              <td>
+                                <strong>{branch.name}</strong>
+                                <small>{branch.name_ar}</small>
+                              </td>
+                              <td>{branch.city}</td>
+                              <td>{branch.timezone}</td>
+                              <td>
+                                <Pill tone={branch.is_demo ? "purple" : "green"}>
+                                  {branch.is_demo ? "Demo import" : "Order report"}
+                                </Pill>
+                              </td>
+                            </tr>
+                          ))}
                       </tbody>
                     </table>
                   </div>

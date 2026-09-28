@@ -13,6 +13,8 @@ export type DemoData = {
   audit: Row<"demo_audit_events">[];
   drafts: Row<"demo_drafts">[];
   performance: Row<"performance_daily">[];
+  orderPerformance: Row<"order_performance_daily">[];
+  orderImports: Row<"order_import_batches">[];
   memberships: Row<"workspace_memberships">[];
   connections: Row<"aggregator_connections">[];
 };
@@ -40,6 +42,8 @@ export async function loadDemoData(workspaceId: string): Promise<DemoData> {
     audit,
     drafts,
     performance,
+    orderPerformance,
+    orderImports,
     memberships,
     connections,
   ] = await Promise.all([
@@ -73,6 +77,8 @@ export async function loadDemoData(workspaceId: string): Promise<DemoData> {
       .eq("workspace_id", workspaceId)
       .order("created_at", { ascending: false }),
     client.from("performance_daily").select("*").eq("workspace_id", workspaceId).order("day"),
+    client.from("order_performance_daily").select("*").eq("workspace_id", workspaceId).order("day"),
+    client.from("order_import_batches").select("*").eq("workspace_id", workspaceId),
     client.from("workspace_memberships").select("*").eq("workspace_id", workspaceId),
     client.from("aggregator_connections").select("*").eq("workspace_id", workspaceId),
   ]);
@@ -86,6 +92,8 @@ export async function loadDemoData(workspaceId: string): Promise<DemoData> {
     audit,
     drafts,
     performance,
+    orderPerformance,
+    orderImports,
     memberships,
     connections,
   ];
@@ -100,6 +108,8 @@ export async function loadDemoData(workspaceId: string): Promise<DemoData> {
     audit: audit.data ?? [],
     drafts: drafts.data ?? [],
     performance: performance.data ?? [],
+    orderPerformance: orderPerformance.data ?? [],
+    orderImports: orderImports.data ?? [],
     memberships: memberships.data ?? [],
     connections: connections.data ?? [],
   };

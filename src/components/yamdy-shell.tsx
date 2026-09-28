@@ -16,7 +16,7 @@ import {
   Wallet,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { signOut, type WorkspaceSummary } from "../lib/auth";
+import { SELECTED_WORKSPACE_KEY, signOut, type WorkspaceSummary } from "../lib/auth";
 
 export function BrandMark() {
   return (
@@ -93,9 +93,11 @@ const navigation = [
 
 export function AppShell({
   workspace,
+  workspaces = [workspace],
   children,
 }: {
   workspace: WorkspaceSummary;
+  workspaces?: WorkspaceSummary[];
   children: ReactNode;
 }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
@@ -105,10 +107,28 @@ export function AppShell({
         <BrandMark />
         <div className="workspace-switcher">
           <span className="workspace-switcher__icon">{workspace.name[0]?.toUpperCase()}</span>
-          <span>
-            <strong>{workspace.name}</strong>
-            <small>Workspace · {workspace.role.replaceAll("_", " ")}</small>
-          </span>
+          {workspaces.length > 1 ? (
+            <select
+              aria-label="Choose workspace"
+              className="workspace-switcher__select"
+              value={workspace.id}
+              onChange={(event) => {
+                window.localStorage.setItem(SELECTED_WORKSPACE_KEY, event.target.value);
+                window.location.assign("/app");
+              }}
+            >
+              {workspaces.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name} · {option.role.replaceAll("_", " ")}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span>
+              <strong>{workspace.name}</strong>
+              <small>Workspace · {workspace.role.replaceAll("_", " ")}</small>
+            </span>
+          )}
         </div>
         <nav aria-label="Main navigation">
           {navigation.map(({ label, to, icon: Icon }) => (
@@ -128,7 +148,11 @@ export function AppShell({
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <span className="demo-label">Demo workspace · no live channel actions</span>
+          <span className="demo-label">
+            {workspace.reportingMode === "client_export"
+              ? "Historical export · no live channel actions"
+              : "Demo workspace · no live channel actions"}
+          </span>
           <button
             type="button"
             onClick={() => {
